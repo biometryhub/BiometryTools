@@ -1,19 +1,21 @@
-
-## Conversion function for Efficiency and Responsiveness BLUPs in
-## Treatment x Site x Variety experiments
-
-## The function assumes you have a Treatment x Site factor that is a composite of
-## treatments and sites. The function requires no specific ordering of the factor levels.
-
-## Arguments:
-##  model: Final full Treatment x Site x Variety model
-##  Env: Treatment x Site x Variety term
-##  levs: Named treatment levels used in transformation. i.e c("Treat1", "Treat2")
-##  would regress Treat2 on Treat1
-##  sep: separator used for Treat x Site names
+#' Conversion function for Efficiency and Responsiveness BLUPs in
+#' Treatment x Site x Variety experiments
+#' @param model Final full Treatment x Site x Variety model.
+#' @param y A number.
+#' @return The sum of \code{x} and \code{y}.
 
 conv <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...){
-  if(is.null(levs))
+    ## The function assumes you have a Treatment x Site factor that is a composite of
+    ## treatments and sites. The function requires no specific ordering of the factor levels.
+
+    ## Arguments:
+    ##  model: Final full Treatment x Site x Variety model
+    ##  Env: Treatment x Site x Variety term
+    ##  levs: Named treatment levels used in transformation. i.e c("Treat1", "Treat2")
+    ##  would regress Treat2 on Treat1
+    ##  sep: separator used for Treat x Site names
+
+    if(is.null(levs))
       stop("Treatment levels cannnot be NULL.")
   evnam <- unlist(strsplit(Env, ":"))
   enam <- evnam[1]; vnam <- evnam[2]
