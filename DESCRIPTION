@@ -1,0 +1,13 @@
+Package: BiometryTools
+Type: Package
+Title: A Collection of Functions for use in the Biometry Hub
+Version: 0.1.0
+Authors@R: c(
+    person("Julian", "Taylor", email = "biometryhub@adelaide.edu.au", role = "aut"),
+    person("Sam", "Rogers", email = "biometryhub@adelaide.edu.au", role = "cre"))
+Imports: ggplot2, agricolae, RColorBrewer
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
