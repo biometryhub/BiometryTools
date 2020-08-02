@@ -1,14 +1,14 @@
 Package: BiometryTools
 Type: Package
-Title: A Collection of Functions for use in the Biometry Hub
+Title: A suite of functions for conducting post analysis tasks with ASReml-R V4 models.
 Version: 0.1.0
 Authors@R: c(
     person("Julian", "Taylor", email = "biometryhub@adelaide.edu.au", role = "aut"),
     person("Sam", "Rogers", email = "biometryhub@adelaide.edu.au", role = "cre"))
 Imports: ggplot2, agricolae, RColorBrewer
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: file LICENSE
+SystemRequirements: asreml-R 4.x
+Description: A suite of functions for conductng post analysis tasks with ASReml-R V4 models.
+License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0
