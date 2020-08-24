@@ -2,7 +2,7 @@
 #'
 #' @param library The location of the library on the current machine to copy.
 #' @param output
-#' @param expiry
+#' @param expiry Expiry for online file store.
 #' @param quiet
 #' @param format
 #'
@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples
-transfer_packages <- function(library = .libPaths()[1], output = "online", expiry, format = "list", quiet = F) {
+transfer_packages <- function(library = .libPaths()[1], output = "online", expiry="14d", format = "list", quiet = F) {
     # Get list of installed packages
     # Choose location to save
     #   file.io is default, also enable gist and local file (.Rds or csv)
@@ -22,7 +22,9 @@ transfer_packages <- function(library = .libPaths()[1], output = "online", expir
     pkgs <- unname(installed.packages(lib.loc = library, priority = "NA")[,1])
 
     if(output == "online") {
-        r <- POST("https://file.io", body = list(text = paste0('"', pkgs, '"', collapse = ', ')))
+        to_install <- paste0("c(", paste0('"', pkgs, '"', collapse = ', '), ")")
+        r <- POST("https://file.io", body = list(text = to_install))
+        link <- content(r)$link
     }
     else if(output == "local") {
 
