@@ -2,20 +2,27 @@
 % Please edit documentation in R/conv3.R
 \name{conv}
 \alias{conv}
-\title{Conversion function for Efficiency and Responsiveness BLUPs in
-Treatment x Site x Variety experiments}
+\title{Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments}
 \usage{
 conv(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...)
 }
 \arguments{
-\item{model}{Final full Treatment x Site x Variety model.}
+\item{model}{Final full Treatment x Site x Variety model}
 
-\item{y}{A number.}
+\item{Env}{Treatment x Site x Variety term}
+
+\item{levs}{Named treatment levels used in transformation. i.e c("Treat1", "Treat2") would regress Treat2 on Treat1}
+
+\item{sep}{separator used for Treat x Site names. Defaults to \code{-}}
+
+\item{...}{}
 }
 \value{
-The sum of \code{x} and \code{y}.
+
 }
 \description{
-Conversion function for Efficiency and Responsiveness BLUPs in
-Treatment x Site x Variety experiments
+Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments
+}
+\examples{
+
 }
