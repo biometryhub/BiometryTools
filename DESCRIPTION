@@ -1,17 +1,29 @@
-Package: BiometryTools
 Type: Package
-Title: A suite of functions for conducting post analysis tasks with ASReml-R V4 models.
+Package: BiometryTools
+Title: A suite of functions for conducting post analysis
+    tasks with ASReml-R V4 models.
 Version: 0.1.3
-Authors@R: c(
-    person("Julian", "Taylor", email = "biometryhub@adelaide.edu.au", role = "aut"),
-    person("Sam", "Rogers", email = "biometryhub@adelaide.edu.au", role = "cre"))
-Imports: ggplot2, agricolae, RColorBrewer
-SystemRequirements: asreml-R 4.x
-Description: A suite of functions for conductng post analysis tasks with ASReml-R V4 models.
+Authors@R: 
+    c(person(given = "Julian",
+             family = "Taylor",
+             role = "aut",
+             email = "biometryhub@adelaide.edu.au"),
+      person(given = "Sam",
+             family = "Rogers",
+             role = "cre",
+             email = "biometryhub@adelaide.edu.au"))
+Description: A suite of functions for conductng post analysis
+    tasks with ASReml-R V4 models.
 License: GPL (>= 2)
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.1.1
-Roxygen: list(markdown = TRUE)
+Imports: 
+    agricolae,
+    ggplot2,
+    httr,
+    RColorBrewer
 Suggests: 
     testthat
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+SystemRequirements: asreml-R 4.x
