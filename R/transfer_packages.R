@@ -22,7 +22,7 @@ transfer_packages <- function(library = .libPaths()[1], output = "online", expir
     pkgs <- unname(installed.packages(lib.loc = library, priority = "NA")[,1])
 
     if(output == "online") {
-        to_install <- paste0("c(", paste0('"', pkgs, '"', collapse = ', '), ")")
+        to_install <- paste0("install.packages(c(", paste0('"', pkgs, '"', collapse = ', '), "), repos = 'https://cloud.r-project.org')")
         r <- POST("https://file.io", body = list(text = to_install))
         link <- content(r)$link
     }
