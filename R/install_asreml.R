@@ -166,6 +166,12 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
     }
 }
 
+
+# Should do this with:
+## @importFrom magrittr %>%
+## @export
+#magrittr::`%>%`
+
 #' Update asreml package
 #'
 #' @param ... other arguments passed to [BiometryTraining::install_asreml()]
