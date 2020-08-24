@@ -1,7 +1,7 @@
 Package: BiometryTools
 Type: Package
 Title: A suite of functions for conducting post analysis tasks with ASReml-R V4 models.
-Version: 0.1-2
+Version: 0.1.3
 Authors@R: c(
     person("Julian", "Taylor", email = "biometryhub@adelaide.edu.au", role = "aut"),
     person("Sam", "Rogers", email = "biometryhub@adelaide.edu.au", role = "cre"))
@@ -11,4 +11,7 @@ Description: A suite of functions for conductng post analysis tasks with ASReml-
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
+Suggests: 
+    testthat
