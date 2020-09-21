@@ -1,10 +1,10 @@
-#' Easily transfer a list of all installed packages from one machine to another
+#' Easily reinstall all currently installed packages on another machine.
 #'
 #' @param library The location of the library on the current machine to copy.
-#' @param output
-#' @param expiry Expiry for online file store.
-#' @param quiet
+#' @param output One of `online` (the default), `gist` or `local`. Saves a list of installed packages to the chosen location, and provides instructions on how to use this to (re)install the packages elsewhere.
+#' @param expiry Expiry for online file store. Ignored for other save locations.
 #' @param format
+#' @param quiet Logical. Suppress output if `TRUE`.
 #'
 #' @importFrom httr POST
 #'
@@ -23,6 +23,7 @@ transfer_packages <- function(library = .libPaths()[1], output = "online", expir
 
     if(output == "online") {
         to_install <- paste0("install.packages(c(", paste0('"', pkgs, '"', collapse = ', '), "), repos = 'https://cloud.r-project.org')")
+
         r <- POST("https://file.io", body = list(text = to_install))
         link <- content(r)$link
     }
