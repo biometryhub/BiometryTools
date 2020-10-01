@@ -2,7 +2,7 @@
 % Please edit documentation in R/reinstall_packages.R
 \name{reinstall_packages}
 \alias{reinstall_packages}
-\title{Reinstall packages}
+\title{Reinstall all currently installed packages}
 \usage{
 reinstall_packages(location = .libPaths()[1], source = FALSE)
 }
@@ -15,5 +15,5 @@ reinstall_packages(location = .libPaths()[1], source = FALSE)
 
 }
 \description{
-Reinstall packages
+Reinstall all currently installed packages
 }

@@ -145,7 +145,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
 
         deps <- c("data.table", "ggplot2", "grid", "methods", "jsonlite")
         for(i in seq_along(deps)) {
-            if(deps[i] %!in% installed.packages()[,1]) {
+            if(!deps[i] %in% installed.packages()[,1]) {
                 install.packages(deps[i], repos = "https://cloud.r-project.org")
             }
         }
