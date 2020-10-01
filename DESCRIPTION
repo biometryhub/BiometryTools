@@ -17,11 +17,14 @@ Description: A suite of functions for conductng post analysis
 License: GPL (>= 2)
 Imports: 
     agricolae,
+    crayon,
     ggplot2,
+    glue,
     httr,
     RColorBrewer
 Suggests: 
-    testthat
+    testthat,
+    usethis
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
