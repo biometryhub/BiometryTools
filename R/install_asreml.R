@@ -11,6 +11,8 @@
 #'
 #' @importFrom utils installed.packages install.packages download.file remove.packages
 #' @importFrom httr GET write_disk progress
+#' @importFrom glue glue glue_col glue_collapse single_quote
+#' @importFrom crayon green
 #'
 #' @export
 #'
@@ -18,7 +20,7 @@
 #'
 install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALSE, keep_file = FALSE) {
     if("asreml" %in% installed.packages()[,1] & !force) {
-        if(!quiet) message("ASreml-R is already installed.")
+        if(!quiet) message(crayon::green("ASreml-R is already installed."))
         invisible(TRUE)
     }
     else {
@@ -35,7 +37,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
                      Darwin  = "mac"
         )
 
-        ver <- paste(os, substr(getRversion(), 1, 3), sep = "_")
+        ver <- glue::glue("{os}_{substr(getRversion(), 1, 3)}")
 
         url <- switch(ver,
                       win_3.5 = {"https://link.biometryhubwaite.com/win-35"},
@@ -57,7 +59,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
 
         if(length(temp_files) > 0) {
             filename <- temp_files
-            save_file <- paste0(tempdir(), "/", filename)
+            save_file <- glue::glue("{tempdir()}/{filename}")
 
             if(keep_file == TRUE) {
                 install_file <- filename
@@ -70,7 +72,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
                     stop("Directory provided in keep_path does not exist. Please provide a path in the keep_file argument to save the package to.")
                 }
                 else {
-                    install_file <- paste0(keep_file, "/", filename)
+                    install_file <- glue::glue("{keep_file}/{filename}")
                     # If path has a trailing slash remove it
                     # install_file <- gsub("//", "/", install_file)
                     file.copy(save_file, install_file)
@@ -89,7 +91,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
                     stop("Directory provided in keep_path does not exist. Please provide a path in the keep_file argument to save the package to.")
                 }
                 else {
-                    install_file <- paste0(keep_file, "/", filename)
+                    install_file <- glue::glue("{keep_file}/{filename}")
                     # If path had a trailing slash remove it
                     # install_file <- gsub("//", "/", install_file)
                     file.copy(save_file, install_file)
@@ -120,7 +122,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
                 file.copy(save_file, filename)
             }
             else if(!keep_file) {
-                install_file <- paste0(tempdir(), "/", filename)
+                install_file <- glue::glue("{tempdir()}/{filename}")
                 file.rename(save_file, install_file)
             }
             else { # Assume keep_file is a path
@@ -128,7 +130,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
                     stop("Directory provided in keep_path does not exist. Please provide a valid path in the keep_file argument to save the package to.")
                 }
                 else {
-                    install_file <- paste0(keep_file, "/", filename)
+                    install_file <- glue::glue("{keep_file}/{filename}")
                     file.copy(save_file, install_file)
                 }
             }
@@ -143,7 +145,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
 
         deps <- c("data.table", "ggplot2", "grid", "methods", "jsonlite")
         for(i in seq_along(deps)) {
-            if(deps[i] %!in% installed.packages()[,1]) {
+            if(!deps[i] %in% installed.packages()[,1]) {
                 install.packages(deps[i], repos = "https://cloud.r-project.org")
             }
         }
@@ -156,7 +158,14 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
         install.packages(install_file, repos = NULL, quiet = quiet, type = ifelse(os == "win", "binary", "source"))
 
         if("asreml" %in% installed.packages()[,1]) {
-            if(!quiet) message("ASreml-R successfully installed!")
+            if(!quiet) {
+                if (requireNamespace("usethis", quietly = TRUE)) {
+                    usethis::ui_done(crayon::green("ASreml-R successfully installed!"))
+                }
+                else {
+                    message(crayon::green("ASreml-R successfully installed!"))
+                }
+            }
         }
         else {
             if(!quiet) warning("There was a problem with installation and ASreml-R was not successfully installed.")
@@ -174,7 +183,7 @@ install_asreml <- function(library = .libPaths()[1], quiet = FALSE, force = FALS
 
 #' Update asreml package
 #'
-#' @param ... other arguments passed to [BiometryTraining::install_asreml()]
+#' @param ... other arguments passed to [BiometryTools::install_asreml()]
 #'
 #' @export
 update_asreml <- function(...) {

@@ -87,6 +87,17 @@ randomRegress <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", 
 
 ## BLUEs regression
 
+#' Fixed regression for doing stuff
+#'
+#' @param model
+#' @param term
+#' @param levs
+#' @param robust
+#'
+#' @return
+#' @export
+#'
+#' @examples
 fixedRegress <- function(model, term = "Treatment:Genotype", levs = c("9 cm","Control"), robust = TRUE){
     pred <- predict(model, classify = term, vcov = TRUE)
     terms <- unlist(strsplit(term, ":"))

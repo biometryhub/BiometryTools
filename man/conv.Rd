@@ -18,11 +18,12 @@ conv(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...)
 \item{...}{}
 }
 \value{
-
+Returns a list with BLUPs, and some other stuff JULES COMPLETE
 }
 \description{
 Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments
 }
 \examples{
+JULES COMPLETE
 
 }

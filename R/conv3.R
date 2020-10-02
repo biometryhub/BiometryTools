@@ -6,10 +6,10 @@
 #' @param sep separator used for Treat x Site names. Defaults to `-`
 #' @param ...
 #'
-#' @return
+#' @return Returns a list with BLUPs, and some other stuff JULES COMPLETE
 #' @export
 #'
-#' @examples
+#' @examples JULES COMPLETE
 #'
 conv <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...){
   if(is.null(levs))

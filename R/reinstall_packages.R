@@ -1,4 +1,4 @@
-#' Reinstall packages
+#' Reinstall all currently installed packages
 #'
 #' @param location Location to check for installed packages and to reinstall to. Defaults to the first option in `.libPaths()`.
 #' @param source Logical. Install packages from source that have later source versions than binaries? This should usually be FALSE.
