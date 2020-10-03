@@ -7,9 +7,10 @@
 transfer_packages(
   library = .libPaths()[1],
   output = "online",
-  expiry = "14d",
+  expiry = "7d",
   filename = "transfer_packages",
-  quiet = F
+  include_remotes = TRUE,
+  quiet = FALSE
 )
 }
 \arguments{
@@ -17,9 +18,11 @@ transfer_packages(
 
 \item{output}{One of \code{online} (the default), \code{gist} or \code{local}. Saves a list of installed packages to the chosen location, and provides instructions on how to use this to (re)install the packages elsewhere. See Details for more information.}
 
-\item{expiry}{Expiry for online file store. Ignored for other save locations.}
+\item{expiry}{Expiry for online file store in days. Weeks can be given with \code{w}, or months with \code{m}. Default is 7 days. Will be ignored if \code{output} is not \code{online}.}
 
 \item{filename}{Filename for the local output file. Ignored if \code{output} is not set to \code{local}.}
+
+\item{include_remotes}{Logical (default \code{TRUE}). Check for any packages installed from repositories other than CRAN, and output instructions to reinstall.}
 
 \item{quiet}{Logical (default \code{FALSE}). Suppress output if \code{TRUE}.}
 }
@@ -31,7 +34,7 @@ Easily reinstall all currently installed packages on another machine or version 
 }
 \details{
 If \code{output} is \code{online}, the resulting list of currently installed packages is stored on \url{https://file.io} for the time specified in \code{expiry}.
-If \code{output} is \code{local}
+If \code{output} is \code{local}, an R script file (\code{.R}) is saved to the current working directory, which can be transferred manually to another machine.
 }
 \examples{
 

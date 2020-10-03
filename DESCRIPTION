@@ -16,7 +16,6 @@ Description: A suite of functions for conductng post analysis
     tasks with ASReml-R V4 models.
 License: GPL (>= 2) + file LICENSE
 Imports: 
-    agricolae,
     crayon,
     ggplot2,
     glue,
