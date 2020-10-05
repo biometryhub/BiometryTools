@@ -6,16 +6,16 @@
 #' @keywords internal
 #'
 gh_packages <- function(pkg) {
-    list <- which(sapply(pkg, function(x) !is.null(packageDescription(x)$RemoteType)))
-    results <- data.frame()
-    if(length(list)>0) {
-        type <- sapply(pkg[list], function(x) packageDescription(x)$RemoteType)
-        username <- sapply(pkg[list], function(x) ifelse(is.null(packageDescription(x)$RemoteUsername), NA, packageDescription(x)$RemoteUsername))
-        repo <- names(list)
-        results <- data.frame(type, account = username, repo)
-        rownames(results) <- NULL
-    }
-    return(results)
+  list <- which(sapply(pkg, function(x) !is.null(packageDescription(x)$RemoteType)))
+  results <- data.frame()
+  if (length(list) > 0) {
+    type <- sapply(pkg[list], function(x) packageDescription(x)$RemoteType)
+    username <- sapply(pkg[list], function(x) ifelse(is.null(packageDescription(x)$RemoteUsername), NA, packageDescription(x)$RemoteUsername))
+    repo <- names(list)
+    results <- data.frame(type, account = username, repo)
+    rownames(results) <- NULL
+  }
+  return(results)
 }
 
 

@@ -19,47 +19,46 @@
 #'
 #' @examples
 #'
-transfer_packages <- function(library = .libPaths()[1], output = "online", expiry="7d", filename = "transfer_packages", include_remotes = TRUE, quiet = FALSE) {
+transfer_packages <- function(library = .libPaths()[1], output = "online", expiry = "7d", filename = "transfer_packages", include_remotes = TRUE, quiet = FALSE) {
+  pkgs <- unname(installed.packages(lib.loc = library, priority = "NA")[, 1])
+  to_install <- glue::glue("install.packages(c({glue::glue_collapse(glue::single_quote(pkgs), sep = ', ')}), repos = 'https://cloud.r-project.org')")
+  green <- crayon::green
+  blue <- crayon::blue
 
-    pkgs <- unname(installed.packages(lib.loc = library, priority = "NA")[,1])
-    to_install <- glue::glue("install.packages(c({glue::glue_collapse(glue::single_quote(pkgs), sep = ', ')}), repos = 'https://cloud.r-project.org')")
-    green <- crayon::green
-    blue <- crayon::blue
+  if (output == "online") {
+    r <- httr::POST(glue::glue("https://file.io?expires={expiry}"), body = list(text = to_install))
+    link <- httr::content(r)$link
+    if (!quiet) {
+      message(glue::glue_col("Now run {green source({link})} on the other machine to install the packages."))
+    }
+  }
+  else if (output == "local") {
+    write(to_install, file = glue::glue("{filename}.R"))
+    if (!quiet) {
+      message(glue::glue_col("Now copy the file run {filename}.R to the other machine and run {green source('{filename}.R')} to install the packages."))
+    }
+  }
+  else if (output == "gist") {
+    # This should only be used by advanced users, do you want to continue? Y/n?
+    # Public or private?
+  }
+  else {
+    stop("output should be one of 'online', 'local' or 'gist'")
+  }
 
-    if(output == "online") {
-        r <- httr::POST(glue::glue("https://file.io?expires={expiry}"), body = list(text = to_install))
-        link <- httr::content(r)$link
-        if(!quiet) {
-            message(glue::glue_col("Now run {green source({link})} on the other machine to install the packages."))
-        }
-    }
-    else if(output == "local") {
-        write(to_install, file = glue::glue("{filename}.R"))
-        if(!quiet) {
-            message(glue::glue_col("Now copy the file run {filename}.R to the other machine and run {green source('{filename}.R')} to install the packages."))
-        }
-    }
-    else if(output == "gist") {
-        # This should only be used by advanced users, do you want to continue? Y/n?
-        # Public or private?
-    }
-    else {
-        stop("output should be one of 'online', 'local' or 'gist'")
-    }
-
-    if(include_github) {
-        gh <- gh_packages(pkgs)
-        if(nrow(gh)>0 & !quiet) {
-            message(glue::glue_col("You have some packages installed from remote sources other than CRAN.
+  if (include_github) {
+    gh <- gh_packages(pkgs)
+    if (nrow(gh) > 0 & !quiet) {
+      message(glue::glue_col("You have some packages installed from remote sources other than CRAN.
                                They are: {blue {glue::glue_collapse(gh$repo, sep = ', ', last = ' and ')}}"))
-            # print(gh, row.names = F)
-            message(glue::glue_col("You will need to use the {blue remotes} package to reinstall them."))
-            if("github" %in% gh$type) {
-                message("To install those from github, run:")
-                output <- paste0("'", gh[which(gh$type=="github"),2], "/", gh[which(gh$type=="github"),3], "'", collapse = ", ")
-                message(glue::glue_col("To install those from github, run:
+      # print(gh, row.names = F)
+      message(glue::glue_col("You will need to use the {blue remotes} package to reinstall them."))
+      if ("github" %in% gh$type) {
+        message("To install those from github, run:")
+        output <- paste0("'", gh[which(gh$type == "github"), 2], "/", gh[which(gh$type == "github"), 3], "'", collapse = ", ")
+        message(glue::glue_col("To install those from github, run:
                                {blue remotes::install_github(c({output}))}"))
-            }
-        }
+      }
     }
+  }
 }

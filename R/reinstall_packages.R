@@ -7,12 +7,12 @@
 #' @export
 #'
 reinstall_packages <- function(location = .libPaths()[1], source = FALSE) {
-    to_install <- unname(installed.packages(lib.loc = library, priority = "NA")[,1])
+  to_install <- unname(installed.packages(lib.loc = library, priority = "NA")[, 1])
 
-    if(source) {
-        op <- options(install.packages.compile.from.source = "always")
-        on.exit(options(op), add = TRUE)
-    }
+  if (source) {
+    op <- options(install.packages.compile.from.source = "always")
+    on.exit(options(op), add = TRUE)
+  }
 
-    install.packages(to_install, lib = location, type = ifelse(source, "both", "binary"))
+  install.packages(to_install, lib = location, type = ifelse(source, "both", "binary"))
 }
