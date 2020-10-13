@@ -10,7 +10,11 @@ Authors@R:
              email = "biometryhub@adelaide.edu.au"),
       person(given = "Sam",
              family = "Rogers",
-             role = "cre",
+             role = c("cre", "ctb"),
+             email = "biometryhub@adelaide.edu.au"),
+             person(given = "Russell",
+             family = "Edson",
+             role = "ctb",
              email = "biometryhub@adelaide.edu.au"))
 Description: A suite of functions for conductng post analysis
     tasks with ASReml-R V4 models.
