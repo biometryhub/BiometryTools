@@ -1,14 +1,17 @@
 #' BLUEs LSD/p-value comparison function
 #'
-#' @param model
-#' @param term
-#' @param type
-#' @param average.LSD
+#' @param model An `asreml` model
+#' @param term JULES COMPLETE
+#' @param type The type of comparison. Can take values of `PVAL` or `LSD`.
+#' @param average.LSD JULES COMPLETE
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 compare <- function(model, term = "Line", type = "PVAL", average.LSD = FALSE) {
   pred <- predict(model, classify = term, sed = TRUE)
   nterm <- unlist(strsplit(term, ":"))

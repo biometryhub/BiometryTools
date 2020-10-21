@@ -15,3 +15,8 @@ manhattan(mlist, cross, chr.in = NULL, annotate = TRUE, ...)
 \description{
 Manhattan plot using ggplot
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

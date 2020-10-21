@@ -15,3 +15,8 @@ herit.asreml(model, term = "SYear:Genotype", ...)
 \description{
 Heritability for multi/single environment trials
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

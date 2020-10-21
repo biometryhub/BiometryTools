@@ -10,6 +10,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 manhattan <- function(mlist, cross, chr.in = NULL, annotate = TRUE, ...) {
   nams <- names(mlist)
   outs <- lapply(mlist, function(el) {

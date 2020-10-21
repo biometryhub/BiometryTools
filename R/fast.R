@@ -9,6 +9,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 fast <- function(model, dat = NULL, term = "fa(Site, 4):Genotype", ...) {
   #    dat <- eval(model$call$data)
   str <- strsplit(term, ":")[[1]]

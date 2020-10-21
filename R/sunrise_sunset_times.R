@@ -34,8 +34,8 @@
 #       parameterises on sunrise/sunset, or perhaps use a
 #       function-generating macro?
 
-library(sp)
-library(maptools)
+# library(sp)
+# library(maptools)
 
 
 #' Return the time of sunrise given the date and GPS coordinates.
@@ -45,8 +45,11 @@ library(maptools)
 #' @param longitude The decimal-degrees for the longitude (Easting).
 #' @return A POSIXct object for the local time of sunrise.
 #'
-#' @example
-#' date <- lubridate::as_datetime("2020-01-01", tz = "Australia/Adelaide")
+#' @export
+#'
+#' @examples
+#' library(lubridate)
+#' date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
 #' sunrise_time(date, -35.69167, 136.9650)
 sunrise_time <- function(datetime, latitude, longitude) {
   coordinates <- sp::SpatialPoints(
@@ -71,8 +74,11 @@ sunrise_time <- function(datetime, latitude, longitude) {
 #' @param longitude The decimal-degrees for the longitude (Easting).
 #' @return A POSIXct object for the local time of sunset.
 #'
+#' @export
+#'
 #' @example
-#' date <- lubridate::as_datetime("2020-01-01", tz = "Australia/Adelaide")
+#' library(lubridate)
+#' date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
 #' sunset_time(date, -35.69167, 136.9650)
 sunset_time <- function(datetime, latitude, longitude) {
   coordinates <- sp::SpatialPoints(

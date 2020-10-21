@@ -7,7 +7,7 @@
 gh_packages(pkg)
 }
 \arguments{
-\item{pkg}{A package to check}
+\item{pkg}{A character vector of package names to check.}
 }
 \value{
 A dataframe containing packages installed from remote sources, with the type of remote, account name and repo name.

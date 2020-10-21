@@ -1,14 +1,18 @@
-#' Associate BLUEs with BLUPs form predict calls of the same model
+#' Associate BLUEs with BLUPs from predict calls of the same model
 #'
-#' @param model
-#' @param ran.term
-#' @param fix.term
-#' @param ...
+#' @param model An `asreml` model.
+#' @param ran.term Random terms from the `model`.
+#' @param fix.term Fixed terms from the `model`.
+#' @param ... Other parameters to be passed to the predict function.
 #'
-#' @return
+#' @return JULES COMPLETE
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
+#'
 associate <- function(model, ran.term = "Treatment:Cultivar", fix.term = "Treatment:Type", ...) {
   rnams <- all.vars(as.formula(paste("~ ", ran.term, sep = "")))
   fnams <- all.vars(as.formula(paste("~ ", fix.term, sep = "")))

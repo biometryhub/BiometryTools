@@ -2,7 +2,7 @@
 % Please edit documentation in R/clones.R
 \name{phenClones}
 \alias{phenClones}
-\title{check whether genetic clones are in the experiment}
+\title{Check whether genetic clones are in the experiment}
 \usage{
 phenClones(
   model,
@@ -14,11 +14,26 @@ phenClones(
 )
 }
 \arguments{
-\item{sep}{}
+\item{model}{An \code{asreml} model.}
+
+\item{cross}{JULES COMPLETE}
+
+\item{matching}{JULES COMPLETE}
+
+\item{Envir}{JULES COMPLETE}
+
+\item{no.samp}{JULES COMPLETE}
+
+\item{sep}{JULES COMPLETE}
 }
 \value{
-
+A data frame containing JULES COMPLETE
 }
 \description{
-check whether genetic clones are in the experiment
+Check whether genetic clones are in the experiment
+}
+\examples{
+\dontrun{
+JULES COMPLETE
+}
 }

@@ -10,6 +10,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 hsd <- function(model, term = "Treatment:Genotype", by = "Treatment", omit.string = NULL, ...) {
   pred <- predict(model, classify = term, sed = TRUE, ...)
   pv <- pred$pvals

@@ -12,6 +12,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 randomRegress <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...) {
   if (is.null(levs)) {
     stop("Treatment levels cannnot be NULL.")
@@ -102,6 +105,9 @@ randomRegress <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", 
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 fixedRegress <- function(model, term = "Treatment:Genotype", levs = c("9 cm", "Control"), robust = TRUE) {
   pred <- predict(model, classify = term, vcov = TRUE)
   terms <- unlist(strsplit(term, ":"))

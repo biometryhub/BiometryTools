@@ -1,16 +1,19 @@
-#' check whether genetic clones are in the experiment
+#' Check whether genetic clones are in the experiment
 #'
-#' @param model
-#' @param cross
-#' @param matching
-#' @param Envir
-#' @param no.samp
-#' @param sep
+#' @param model An `asreml` model.
+#' @param cross JULES COMPLETE
+#' @param matching JULES COMPLETE
+#' @param Envir JULES COMPLETE
+#' @param no.samp JULES COMPLETE
+#' @param sep JULES COMPLETE
 #'
-#' @return
+#' @return A data frame containing JULES COMPLETE
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 phenClones <- function(model, cross, matching = "Genotype", Envir = NULL, no.samp = 1000, sep = "_") {
   mg <- as.character(cross$pheno[[matching]])
   mgs <- lapply(mg, function(el, sep) {
@@ -57,15 +60,18 @@ phenClones <- function(model, cross, matching = "Genotype", Envir = NULL, no.sam
 
 #' Fix clones if they are in the experiment
 #'
-#' @param data
-#' @param cross
-#' @param matching
-#' @param sep
+#' @param data The data frame to fix
+#' @param cross JULES COMPLETE
+#' @param matching The column name to match on
+#' @param sep The separator between JULES COMPLETE
 #'
-#' @return
+#' @return The JULES COMPLETE
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 phenfixClones <- function(data, cross, matching = "Genotype", sep = "_") {
   mg <- as.character(cross$pheno[[matching]])
   mgs <- lapply(mg, function(el, sep) {

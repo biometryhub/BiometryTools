@@ -8,6 +8,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 herit.asreml <- function(model, term = "SYear:Genotype", ...) {
   dat <- eval(model$call$data)
   if (length(grep(":", term))) {

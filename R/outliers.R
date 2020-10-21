@@ -8,6 +8,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 outlier.down <- function(data, model, cutoff = 3) {
   ss <- names(model)
   inds <- 1:nrow(data)
@@ -45,6 +48,9 @@ outlier.down <- function(data, model, cutoff = 3) {
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 outlier.rem <- function(data, model, cutoff = 3) {
   ss <- names(model)
   inds <- 1:nrow(data)

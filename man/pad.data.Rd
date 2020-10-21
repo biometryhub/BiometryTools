@@ -15,3 +15,8 @@ pad.data(data, pattern = "Row:Column", split = "Block", keep = 4, fill = NULL)
 \description{
 Title
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

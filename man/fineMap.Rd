@@ -22,3 +22,8 @@ fineMap(
 \description{
 Fine map a \code{wgaim} object
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

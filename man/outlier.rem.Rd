@@ -15,3 +15,8 @@ outlier.rem(data, model, cutoff = 3)
 \description{
 Outlier removal function
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

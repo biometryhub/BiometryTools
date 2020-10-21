@@ -15,6 +15,9 @@ NULL
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' SAM COMPLETE
+#' }
 theme_design <- function(base_size = 11, base_family = "") {
   ggplot2::theme_grey(base_size = base_size, base_family = base_family) %+replace%
     theme(
@@ -37,6 +40,9 @@ theme_design <- function(base_size = 11, base_family = "") {
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' SAM COMPLETE
+#' }
 theme_design_heat <- function(base_size = 11, base_family = "") {
   theme_grey(base_size = base_size, base_family = base_family) %+replace%
     theme(
@@ -58,6 +64,9 @@ theme_design_heat <- function(base_size = 11, base_family = "") {
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' SAM COMPLETE
+#' }
 theme_scatter <- function(base_size = 11, base_family = "") {
   theme_grey(base_size = base_size, base_family = base_family) %+replace%
     theme(
@@ -83,6 +92,9 @@ theme_scatter <- function(base_size = 11, base_family = "") {
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' SAM COMPLETE
+#' }
 theme_barplot <- function(base_size = 11, base_family = "") {
   theme_grey(base_size = base_size, base_family = base_family) %+replace%
     theme(

@@ -15,3 +15,8 @@ outlier.down(data, model, cutoff = 3)
 \description{
 Downweight outliers
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

@@ -21,3 +21,8 @@ hsd(
 \description{
 Title
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

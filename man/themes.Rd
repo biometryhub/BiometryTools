@@ -33,3 +33,17 @@ theme_barplot(base_size = 11, base_family = "")
 \description{
 Themes that provide some custom styling for \code{ggplot2} plots.
 }
+\examples{
+\dontrun{
+SAM COMPLETE
+}
+\dontrun{
+SAM COMPLETE
+}
+\dontrun{
+SAM COMPLETE
+}
+\dontrun{
+SAM COMPLETE
+}
+}

@@ -20,3 +20,8 @@ fixedRegress(
 \description{
 Fixed regression for doing stuff
 }
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+}

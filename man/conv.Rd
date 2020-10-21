@@ -15,7 +15,7 @@ conv(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...)
 
 \item{sep}{separator used for Treat x Site names. Defaults to \code{-}}
 
-\item{...}{}
+\item{...}{Other arguments passed to \code{predict}}
 }
 \value{
 Returns a list with BLUPs, and some other stuff JULES COMPLETE
@@ -24,6 +24,8 @@ Returns a list with BLUPs, and some other stuff JULES COMPLETE
 Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments
 }
 \examples{
+\dontrun{
 JULES COMPLETE
+}
 
 }

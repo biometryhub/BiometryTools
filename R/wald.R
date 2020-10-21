@@ -1,13 +1,16 @@
 #' Title
 #'
-#' @param object
-#' @param cc
-#' @param keep.fac
+#' @param object An `asreml` object.
+#' @param cc JULES COMPLETE
+#' @param keep.fac Logical (default `TRUE`). Keep factors?
 #'
-#' @return
+#' @return A list containing the wald output.
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 wald.test.asreml <- function(object, cc, keep.fac = TRUE) {
   if (oldClass(object) != "asreml") {
     stop("Requires an object of class asreml\n")

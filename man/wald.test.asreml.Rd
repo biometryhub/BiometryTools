@@ -7,11 +7,20 @@
 \method{wald.test}{asreml}(object, cc, keep.fac = TRUE)
 }
 \arguments{
-\item{keep.fac}{}
+\item{object}{An \code{asreml} object.}
+
+\item{cc}{JULES COMPLETE}
+
+\item{keep.fac}{Logical (default \code{TRUE}). Keep factors?}
 }
 \value{
-
+A list containing the wald output.
 }
 \description{
 Title
+}
+\examples{
+\dontrun{
+JULES COMPLETE
+}
 }

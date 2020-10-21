@@ -7,10 +7,15 @@
 #' @param exclusion.window
 #' @param ...
 #'
+#' @import wgaim
+#'
 #' @return
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 fineMap <- function(model, intervalObj, mark = NULL, flanking = 50, exclusion.window = 10000, ...) {
   resp <- deparse(model$call$fixed[[2]])
   phenoData <- eval(parse(text = paste(resp, ".data", sep = "")))

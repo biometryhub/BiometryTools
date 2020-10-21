@@ -9,33 +9,32 @@ transfer_packages(
   output = "online",
   expiry = "7d",
   filename = "transfer_packages",
-  include_remotes = TRUE,
+  list_remotes = TRUE,
   quiet = FALSE
 )
 }
 \arguments{
 \item{library}{The location of the library on the current machine to copy.}
 
-\item{output}{One of \code{online} (the default), \code{gist} or \code{local}. Saves a list of installed packages to the chosen location, and provides instructions on how to use this to (re)install the packages elsewhere. See Details for more information.}
+\item{output}{One of \code{online} (the default), \code{gist} or \code{local}. Saves a list of installed packages to the chosen location, and provides instructions on how to use this to (re)install the packages elsewhere. See details for more information.}
 
 \item{expiry}{Expiry for online file store in days. Weeks can be given with \code{w}, or months with \code{m}. Default is 7 days. Will be ignored if \code{output} is not \code{online}.}
 
 \item{filename}{Filename for the local output file. Ignored if \code{output} is not set to \code{local}.}
 
-\item{include_remotes}{Logical (default \code{TRUE}). Check for any packages installed from repositories other than CRAN, and output instructions to reinstall.}
+\item{list_remotes}{Logical (default \code{TRUE}). Check for any packages installed from repositories other than CRAN, and output instructions to reinstall.}
 
 \item{quiet}{Logical (default \code{FALSE}). Suppress output if \code{TRUE}.}
 }
 \value{
-
+Prints instructions to console if \code{quiet = FALSE}, and invisibly returns the source command to use on the other machine.
 }
 \description{
 Easily reinstall all currently installed packages on another machine or version of R.
 }
 \details{
-If \code{output} is \code{online}, the resulting list of currently installed packages is stored on \url{https://file.io} for the time specified in \code{expiry}.
+If \code{output} is \code{online}, the resulting list of currently installed packages is stored on \url{https://file.io} for the time specified in \code{expiry}, or until the URL is first accessed.
+Note that both visiting the URL and sourcing the URL count as access, and it will be removed after either.
 If \code{output} is \code{local}, an R script file (\code{.R}) is saved to the current working directory, which can be transferred manually to another machine.
-}
-\examples{
-
+Beware if using \code{quiet = TRUE} together with \code{output = online}, as the source command will not be
 }

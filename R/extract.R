@@ -12,6 +12,9 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 extract <- function(data, pattern = "Row:Column", match = "DH", split = "Block", pad = TRUE, keep = 4, fill = NULL) {
   pat <- unlist(strsplit(pattern, ":"))
   if (!(split %in% names(data))) {

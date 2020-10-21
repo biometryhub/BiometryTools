@@ -4,12 +4,15 @@
 #' @param Env Treatment x Site x Variety term
 #' @param levs Named treatment levels used in transformation. i.e c("Treat1", "Treat2") would regress Treat2 on Treat1
 #' @param sep separator used for Treat x Site names. Defaults to `-`
-#' @param ...
+#' @param ... Other arguments passed to `predict`
 #'
 #' @return Returns a list with BLUPs, and some other stuff JULES COMPLETE
 #' @export
 #'
-#' @examples JULES COMPLETE
+#' @examples
+#' \dontrun{
+#' JULES COMPLETE
+#' }
 #'
 conv <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...){
   if(is.null(levs))
@@ -76,5 +79,6 @@ conv <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...){
   names(blups)[1:3] <- c(levs, "resp")
   glev <- unique(as.character(pvals[[vnam]]))
   blups <- cbind.data.frame(Site = rep(usnams, each = length(glev)), Variety = rep(glev, length(usnams)), blups)
-  list(blups = blups, TGmat = TGmat, Gmat = Gmat, beta = beta, sigr = sigr, tmat = tmat)
+
+  return(list(blups = blups, TGmat = TGmat, Gmat = Gmat, beta = beta, sigr = sigr, tmat = tmat))
 }

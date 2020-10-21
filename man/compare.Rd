@@ -7,11 +7,22 @@
 compare(model, term = "Line", type = "PVAL", average.LSD = FALSE)
 }
 \arguments{
-\item{average.LSD}{}
+\item{model}{An \code{asreml} model}
+
+\item{term}{JULES COMPLETE}
+
+\item{type}{The type of comparison. Can take values of \code{PVAL} or \code{LSD}.}
+
+\item{average.LSD}{JULES COMPLETE}
 }
 \value{
 
 }
 \description{
 BLUEs LSD/p-value comparison function
+}
+\examples{
+\dontrun{
+JULES COMPLETE
+}
 }

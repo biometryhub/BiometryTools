@@ -29,9 +29,9 @@
 # from gridded NetCDF files of temperature data (e.g. from BOM/SILO
 # climate variable datasets).
 
-library(ncdf4)
-library(sp)
-library(raster)
+# library(ncdf4)
+# library(sp)
+# library(raster)
 
 
 #' Return the distance (in km) between the latitude/longitude pairs
@@ -48,8 +48,10 @@ library(raster)
 #' @return The distance (in kilometres) between the coordinate pairs
 #'   (or a vector of respective distances).
 #'
-#' @example
+#' @export
+#' @examples
 #' coord_distance(-34.9257, 138.5832, -34.9285, 138.6007)
+#'
 coord_distance <- function(latA, lonA, latB, lonB) {
   # Estimate Earth's radius (in km)
   earth_radius <- (6378.14 + 6356.75) / 2
@@ -83,11 +85,15 @@ coord_distance <- function(latA, lonA, latB, lonB) {
 #' @return A data frame containing the dates, nearest grid latitude and
 #'   longitude, and the variable values.
 #'
-#' @example
+#' @export
+#'
+#' @examples
+#' \dontrun{
 #' time_series <- extract_time_series("test.nc", -34.9257, 138.583)
+#' }
 extract_time_series <- function(nc_file, latitude, longitude, var = NULL) {
   # Grab the variable names from the NetCDF
-  netcdf <- nc_open(nc_file)
+  netcdf <- ncdf4::nc_open(nc_file)
   var_names <- names(netcdf$var)
 
   # If var wasn't specified, we take the first listed variable as
@@ -105,7 +111,7 @@ extract_time_series <- function(nc_file, latitude, longitude, var = NULL) {
         paste(var_names, collapse = " "),
         ")"
       )
-      nc_close(netcdf)
+      ncdf4::nc_close(netcdf)
       stop(message)
     }
   }
@@ -114,7 +120,7 @@ extract_time_series <- function(nc_file, latitude, longitude, var = NULL) {
   var_title <- netcdf$var[[var]]$longname
   var_units <- netcdf$var[[var]]$units
   var_title <- paste0(var_title, " (", var_units, ")")
-  nc_close(netcdf)
+  ncdf4::nc_close(netcdf)
 
   # Read in the NetCDF layers as rasters
   rasters <- raster::brick(nc_file, varname = var)

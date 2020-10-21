@@ -7,11 +7,22 @@
 phenfixClones(data, cross, matching = "Genotype", sep = "_")
 }
 \arguments{
-\item{sep}{}
+\item{data}{The data frame to fix}
+
+\item{cross}{JULES COMPLETE}
+
+\item{matching}{The column name to match on}
+
+\item{sep}{The separator between JULES COMPLETE}
 }
 \value{
-
+The JULES COMPLETE
 }
 \description{
 Fix clones if they are in the experiment
+}
+\examples{
+\dontrun{
+JULES COMPLETE
+}
 }

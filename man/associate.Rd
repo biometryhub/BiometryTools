@@ -2,7 +2,7 @@
 % Please edit documentation in R/associate.R
 \name{associate}
 \alias{associate}
-\title{Associate BLUEs with BLUPs form predict calls of the same model}
+\title{Associate BLUEs with BLUPs from predict calls of the same model}
 \usage{
 associate(
   model,
@@ -12,11 +12,23 @@ associate(
 )
 }
 \arguments{
-\item{...}{}
+\item{model}{An \code{asreml} model.}
+
+\item{ran.term}{Random terms from the \code{model}.}
+
+\item{fix.term}{Fixed terms from the \code{model}.}
+
+\item{...}{Other parameters to be passed to the predict function.}
 }
 \value{
-
+JULES COMPLETE
 }
 \description{
-Associate BLUEs with BLUPs form predict calls of the same model
+Associate BLUEs with BLUPs from predict calls of the same model
+}
+\examples{
+\dontrun{
+JULES COMPLETE
+}
+
 }
