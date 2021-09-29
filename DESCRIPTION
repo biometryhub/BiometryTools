@@ -19,6 +19,8 @@ Authors@R:
 Description: A suite of functions for conductng post analysis
     tasks with ASReml-R V4 models.
 License: MIT + file LICENSE
+URL: https://biometryhub.github.io/BiometryTools/
+BugReports: https://github.com/biometryhub/BiometryTools/issues
 Imports: 
     crayon,
     ggplot2,
