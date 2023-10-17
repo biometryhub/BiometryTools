@@ -7,7 +7,7 @@
 #' @export
 #'
 reinstall_packages <- function(location = .libPaths()[1], source = FALSE) {
-    to_install <- unname(installed.packages(lib.loc = location, priority = "NA")[, 1])
+    to_install <- rownames(installed.packages(lib.loc = location, priority = "NA"))
 
     if (source) {
         op <- options(install.packages.compile.from.source = "always")
