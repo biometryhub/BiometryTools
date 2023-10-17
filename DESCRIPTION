@@ -19,6 +19,8 @@ Authors@R:
 Description: A suite of functions for conductng post analysis
     tasks with ASReml-R V4 models.
 License: MIT + file LICENSE
+URL: https://biometryhub.github.io/BiometryTools/
+BugReports: https://github.com/biometryhub/BiometryTools/issues
 Imports: 
     crayon,
     ggplot2,
@@ -38,5 +40,5 @@ Enhances: asreml
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 SystemRequirements: asreml-R 4.x

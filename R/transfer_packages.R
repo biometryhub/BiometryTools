@@ -41,7 +41,8 @@ Sys.sleep(5)
         link <- httr::content(r)$link
         if (!quiet) {
             cmd <- glue::glue("source('{link}')")
-            message(glue::glue_col("Now run {green {cmd}} on the other machine to install the packages."))
+            message(glue::glue_col("Now run {green {cmd}} on the other machine to install the packages.
+                                   This link will become inactive after the first use or after {expiry}."))
         }
     }
     else if (output == "local") {
@@ -68,7 +69,7 @@ Sys.sleep(5)
     if (list_remotes) {
         # gh <- gh_packages(pkgs)
         if (nrow(gh) > 0 & !quiet) {
-            message(glue::glue_col("\n\nYou have some packages installed from remote sources other than CRAN. They are: {blue {glue::glue_collapse(gh$repo, sep = ', ', last = ' and ')}}"))
+            message(glue::glue_col("\n\nThese packages were installed from sources other than CRAN: {blue {glue::glue_collapse(gh$repo, sep = ', ', last = ' and ')}}"))
 
             message(glue::glue_col("You will need to use the {blue remotes} package to reinstall them."))
             if ("github" %in% gh$type) {
