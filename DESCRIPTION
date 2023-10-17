@@ -1,6 +1,6 @@
 Type: Package
 Package: BiometryTools
-Title: A suite of functions for conducting post analysis
+Title: A Suite of Functions for Conducting Post Analysis Tasks with ASReml-R V4 Models
     tasks with ASReml-R V4 models
 Version: 0.1.3
 Authors@R: 

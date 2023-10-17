@@ -52,6 +52,12 @@ Sys.sleep(5)
         }
     }
     else if (output == "gist") {
+        if(requireNamespace("gistr", quietly = T)) {
+
+        }
+        else {
+            stop("The gistr package is not available. Please install it.")
+        }
         # This should only be used by advanced users, do you want to continue? Y/n?
         # Public or private?
     }
