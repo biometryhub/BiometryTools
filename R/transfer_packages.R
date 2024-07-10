@@ -12,11 +12,10 @@
 #' @importFrom glue glue glue_col glue_collapse single_quote
 #'
 #' @details If `output` is `online`, the resulting list of currently installed packages is stored on [https://file.io](https://file.io) for the time specified in `expiry`, or until the URL is first accessed.
-#' Note that both visiting the URL and sourcing the URL count as access, and it will be removed after either.
+#' Note that either visiting the URL in a browser or sourcing the URL via R count as access, and it will be removed after either.
 #' If `output` is `local`, an R script file (`.R`) is saved to the current working directory, which can be transferred manually to another machine.
-#' Beware if using `quiet = TRUE` together with `output = online`, as the source command will not be
 #'
-#' @return Prints instructions to console if `quiet = FALSE`, and invisibly returns the source command to use on the other machine.
+#' @return Prints instructions to console if `quiet = FALSE`, and invisibly returns the source command to use on the other machine if quiet is `TRUE`.
 #' @export
 #'
 transfer_packages <- function(library = .libPaths()[1], output = "online", expiry = "7d", filename = "transfer_packages", list_remotes = TRUE, quiet = FALSE) {
@@ -39,11 +38,9 @@ Sys.sleep(5)
     if (output == "online") {
         r <- httr::POST(glue::glue("https://file.io/?expires={expiry}"), body = list(text = to_install))
         link <- httr::content(r)$link
-        if (!quiet) {
-            cmd <- glue::glue("source('{link}')")
+        cmd <- glue::glue("source('{link}')")
             message(glue::glue_col("Now run {green {cmd}} on the other machine to install the packages.
                                    This link will become inactive after the first use or after {expiry}."))
-        }
     }
     else if (output == "local") {
         write(to_install, file = glue::glue("{filename}.R"))
