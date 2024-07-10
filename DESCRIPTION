@@ -1,14 +1,44 @@
-Package: BiometryTools
 Type: Package
-Title: A suite of functions for conducting post analysis tasks with ASReml-R V4 models.
-Version: 0.1-2
-Authors@R: c(
-    person("Julian", "Taylor", email = "biometryhub@adelaide.edu.au", role = "aut"),
-    person("Sam", "Rogers", email = "biometryhub@adelaide.edu.au", role = "cre"))
-Imports: ggplot2, agricolae, RColorBrewer
-SystemRequirements: asreml-R 4.x
-Description: A suite of functions for conductng post analysis tasks with ASReml-R V4 models.
-License: GPL (>= 2)
+Package: BiometryTools
+Title: A Suite of Functions for Conducting Post Analysis Tasks with ASReml-R V4 Models
+    tasks with ASReml-R V4 models
+Version: 0.1.3
+Authors@R: 
+    c(person(given = "Julian",
+             family = "Taylor",
+             role = "aut",
+             email = "biometryhub@adelaide.edu.au"),
+      person(given = "Sam",
+             family = "Rogers",
+             role = c("cre", "ctb"),
+             email = "biometryhub@adelaide.edu.au"),
+             person(given = "Russell",
+             family = "Edson",
+             role = "ctb",
+             email = "biometryhub@adelaide.edu.au"))
+Description: A suite of functions for conductng post analysis
+    tasks with ASReml-R V4 models.
+License: MIT + file LICENSE
+URL: https://biometryhub.github.io/BiometryTools/
+BugReports: https://github.com/biometryhub/BiometryTools/issues
+Imports: 
+    crayon,
+    ggplot2,
+    glue,
+    httr,
+    RColorBrewer,
+    wgaim
+Suggests: 
+    lubridate,
+    maptools,
+    ncdf4,
+    raster,
+    sp,
+    testthat,
+    usethis
+Enhances: asreml
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+SystemRequirements: asreml-R 4.x
