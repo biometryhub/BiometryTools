@@ -13,6 +13,7 @@ gh_packages <- function(pkg) {
         username <- sapply(pkg[list], function(x) ifelse(is.null(packageDescription(x)$RemoteUsername), NA, packageDescription(x)$RemoteUsername))
         repo <- names(list)
         results <- data.frame(type, account = username, repo)
+        results <- subset(results, type != "standard")
         rownames(results) <- NULL
     }
     return(results)
