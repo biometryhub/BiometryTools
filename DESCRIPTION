@@ -30,7 +30,7 @@ Imports:
     wgaim
 Suggests: 
     lubridate,
-    maptools,
+    suntools,
     ncdf4,
     raster,
     sp,

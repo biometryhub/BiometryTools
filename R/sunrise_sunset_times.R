@@ -28,14 +28,9 @@
 # Functions to compute sunrise/sunset times given a date and
 # latitude/longitude coordinates. Useful for e.g. factoring a
 # dataset into Day/Night phases.
-#
-# TODO: >90% code duplication between these two functions.
-#       Maybe worth refactoring into a single function that
-#       parameterises on sunrise/sunset, or perhaps use a
-#       function-generating macro?
 
 # library(sp)
-# library(maptools)
+# library(suntools)
 
 
 #' Return the time of sunrise given the date and GPS coordinates.
@@ -52,18 +47,8 @@
 #' date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
 #' sunrise_time(date, -35.69167, 136.9650)
 sunrise_time <- function(datetime, latitude, longitude) {
-  coordinates <- sp::SpatialPoints(
-    matrix(c(longitude, latitude), ncol = 2),
-    proj4string = sp::CRS("+proj=longlat +datum=WGS84")
-  )
-
-  sunrise <- maptools::sunriset(
-    coordinates,
-    datetime,
-    direction = "sunrise",
-    POSIXct.out = TRUE
-  )
-  sunrise[, 2]
+  verify_sunset_sunrise_params(datetime, latitude, longitude)
+  get_sun_time(datetime, latitude, longitude, "sunrise")
 }
 
 
@@ -76,21 +61,34 @@ sunrise_time <- function(datetime, latitude, longitude) {
 #'
 #' @export
 #'
-#' @example
+#' @examples
 #' library(lubridate)
 #' date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
 #' sunset_time(date, -35.69167, 136.9650)
 sunset_time <- function(datetime, latitude, longitude) {
+  verify_sunset_sunrise_params(datetime, latitude, longitude)
+  get_sun_time(datetime, latitude, longitude, "sunset")
+}
+
+#' Return the time of sunset given the date and GPS coordinates.
+#'
+#' @param datetime A POSIXct object for the local date (and timezone).
+#' @param latitude The decimal-degrees for the latitude (Northing).
+#' @param longitude The decimal-degrees for the longitude (Easting).
+#' @param direction `'sunrise'` or `'sunset'`
+#' @return A POSIXct object for the local time of sunset.
+#' @keywords internal
+get_sun_time <- function(datetime, latitude, longitude, direction) {
   coordinates <- sp::SpatialPoints(
     matrix(c(longitude, latitude), ncol = 2),
     proj4string = sp::CRS("+proj=longlat +datum=WGS84")
   )
 
-  sunset <- maptools::sunriset(
+  sun_time <- suntools::sunriset(
     coordinates,
     datetime,
-    direction = "sunset",
+    direction = direction,
     POSIXct.out = TRUE
   )
-  sunset[, 2]
+  sun_time[, 2]
 }
