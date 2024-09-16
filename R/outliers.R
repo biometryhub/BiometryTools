@@ -13,8 +13,8 @@
 #' }
 outlier.down <- function(data, model, cutoff = 3) {
   ss <- names(model)
-  inds <- 1:nrow(data)
-  for (i in 1:length(ss)) {
+  inds <- seq_len(nrow(data))
+  for (i in seq_along(length(ss))) {
     str <- abs(model[[ss[i]]]$aom$R[, 2])
     r <- str > cutoff
     wh <- inds[r]
@@ -27,7 +27,7 @@ outlier.down <- function(data, model, cutoff = 3) {
         num <- as.numeric(num[length(num)])
       }
       print(wh)
-      for (j in 1:length(wh)) {
+      for (j in seq_along(length(wh))) {
         nam <- paste(ps, j + num, sep = ".")
         v <- rep(0, nrow(data))
         v[wh[j]] <- 1
@@ -53,11 +53,11 @@ outlier.down <- function(data, model, cutoff = 3) {
 #' }
 outlier.rem <- function(data, model, cutoff = 3) {
   ss <- names(model)
-  inds <- 1:nrow(data)
+  inds <- seq_len(nrow(data))
   out <- rep(FALSE, length(model))
   names(out) <- ss
-  for (i in 1:length(ss)) {
-    trait <- data[[ss[i]]]
+  for (i in seq_along(length(ss))) {
+    # trait <- data[[ss[i]]]
     str <- abs(model[[ss[i]]]$aom$R[, 2])
     r <- str > cutoff
     wh <- inds[r]
