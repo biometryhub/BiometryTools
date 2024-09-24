@@ -1,0 +1,17 @@
+{
+  "name": "tidyverse-container",
+  "image": "ghcr.io/rocker-org/devcontainer/r-ver:4",
+  "features": {
+    "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
+      "packages": [
+        "pacman",
+        "ggplot2",
+        "sp",
+        "suntools",
+        "lubridate",
+        "wgaim"
+      ]
+    }
+  },
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh"
+}

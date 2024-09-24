@@ -57,7 +57,6 @@ outlier.rem <- function(data, model, cutoff = 3) {
   out <- rep(FALSE, length(model))
   names(out) <- ss
   for (i in seq_along(length(ss))) {
-    # trait <- data[[ss[i]]]
     str <- abs(model[[ss[i]]]$aom$R[, 2])
     r <- str > cutoff
     wh <- inds[r]
