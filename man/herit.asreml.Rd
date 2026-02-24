@@ -9,9 +9,6 @@ herit.asreml(model, term = "SYear:Genotype", ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Heritability for multi/single environment trials
 }

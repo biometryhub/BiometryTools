@@ -2,7 +2,7 @@
 % Please edit documentation in R/gh_packages.R
 \name{gh_packages}
 \alias{gh_packages}
-\title{Checks if a package was installed from GitHub}
+\title{Identify packages installed from remote sources}
 \usage{
 gh_packages(pkg)
 }
@@ -10,9 +10,32 @@ gh_packages(pkg)
 \item{pkg}{A character vector of package names to check.}
 }
 \value{
-A dataframe containing packages installed from remote sources, with the type of remote, account name and repo name.
+A data frame containing packages installed from remote sources with columns:
+\itemize{
+\item \code{type}: The type of remote source (e.g., "github", "gitlab")
+\item \code{account}: The account/username of the remote repository
+\item \code{repo}: The repository name (same as package name)
+}
+Returns an empty data frame if no packages are from remote sources.
 }
 \description{
-Checks if a package was installed from GitHub
+This function checks which packages in the provided list were installed from
+remote sources (GitHub, GitLab, etc.) rather than CRAN, and returns their
+remote source information.
+}
+\details{
+The function examines the DESCRIPTION file of each package to determine if it
+was installed from a remote source. Packages installed from CRAN or other
+standard repositories will not have RemoteType information.
+}
+\examples{
+\dontrun{
+# Check if specific packages are from GitHub
+gh_packages(c("ggplot2", "devtools", "BiometryTools"))
+
+# Check all installed packages
+gh_packages(rownames(installed.packages()))
+}
+
 }
 \keyword{internal}

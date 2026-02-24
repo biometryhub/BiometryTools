@@ -2,25 +2,67 @@
 % Please edit documentation in R/wald.R
 \name{wald.test.asreml}
 \alias{wald.test.asreml}
-\title{Title}
+\title{Wald tests for linear hypotheses in ASReml models}
 \usage{
 \method{wald.test}{asreml}(object, cc, keep.fac = TRUE)
 }
 \arguments{
-\item{object}{An \code{asreml} object.}
+\item{object}{An \code{asreml} fitted model object.}
 
-\item{cc}{JULES COMPLETE}
+\item{cc}{A list of comparison specifications. Each element must be a list
+containing \code{type} and \code{coef}, and optionally \code{comp} and \code{group}.
 
-\item{keep.fac}{Logical (default \code{TRUE}). Keep factors?}
+Valid fields per comparison:
+\itemize{
+\item \code{type}: either \code{"con"} (contrast test) or \code{"zero"} (joint zero test).
+\item \code{coef}: coefficients involved in the test, either numeric indices
+into \code{object$coefficients$fixed} or character names matching them.
+\item \code{comp}: for \code{type = "con"}, either a numeric vector of contrast
+weights (same length as \code{coef}) or a matrix with one row per contrast and
+\code{ncol(comp) == length(coef)}.
+If omitted for \code{"con"}, a default Helmert-type contrast is used.
+\item \code{group}: optional labels used for printing. For \code{"con"} this may be
+a list with elements \code{left} and \code{right} (scalars or vectors matching the
+number of contrasts). For \code{"zero"} this may be a single character label for the test.
+}}
+
+\item{keep.fac}{Logical (default \code{TRUE}). If \code{FALSE}, coefficient names are
+shortened for display by stripping factor prefixes up to the first underscore.}
 }
 \value{
-A list containing the wald output.
+An (invisible) list with components:
+\itemize{
+\item \code{Contrasts}: a data frame of Wald statistics, p-values, contrast estimates and SEs
+for \code{type = "con"} tests (or \code{NULL} if none requested).
+\item \code{Zero}: a data frame of Wald statistics and p-values for \code{type = "zero"} tests
+(or \code{NULL} if none requested).
+}
 }
 \description{
-Title
+Performs Wald tests on fixed-effect coefficients from an \code{asreml}
+fitted model using the model's fixed-effect coefficient covariance matrix
+(the \code{Cfixed} / "C" matrix). Supports (i) linear contrasts among
+coefficients and (ii) joint tests of whether selected coefficients are zero.
+}
+\details{
+The function requires access to \code{object$Cfixed}. If it is not present,
+the model is refitted with \code{Cfixed = TRUE} via \code{asreml.options(Cfixed = TRUE)}
+followed by \code{update(object)}.
+
+For \code{type = "con"}, each contrast is tested with 1 degree of freedom:
+\deqn{W = (\hat\theta/\mathrm{SE}(\hat\theta))^2 \sim \chi^2_1}
+where \eqn{\hat\theta = c^\top \hat\beta}.
+
+For \code{type = "zero"}, selected coefficients are tested jointly:
+\deqn{W = (Z\hat\beta)^\top (Z V Z^\top)^{-1} (Z\hat\beta) \sim \chi^2_k}
+where \eqn{k} is the number of selected coefficients.
+
+The function prints tables to the console and returns results invisibly.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+# TODO example1 (contrast):
+
+# TODO example2 (joint zero test):
 }
 }

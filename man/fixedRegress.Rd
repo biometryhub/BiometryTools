@@ -14,9 +14,6 @@ fixedRegress(
 \arguments{
 \item{robust}{}
 }
-\value{
-
-}
 \description{
 Fixed regression for doing stuff
 }

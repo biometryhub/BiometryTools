@@ -21,15 +21,6 @@ theme_barplot(base_size = 11, base_family = "")
 
 \item{base_family}{Font family used for the plot.}
 }
-\value{
-
-
-
-
-
-
-
-}
 \description{
 Themes that provide some custom styling for \code{ggplot2} plots.
 }

@@ -2,27 +2,47 @@
 % Please edit documentation in R/clones.R
 \name{phenfixClones}
 \alias{phenfixClones}
-\title{Fix clones if they are in the experiment}
+\title{Collapse Cloned Genotypes into Single Levels}
 \usage{
 phenfixClones(data, cross, matching = "Genotype", sep = "_")
 }
 \arguments{
-\item{data}{The data frame to fix}
+\item{data}{A data frame containing genotype factor levels.}
 
-\item{cross}{JULES COMPLETE}
+\item{cross}{A list-like object containing a \code{$pheno} data frame.}
 
-\item{matching}{The column name to match on}
+\item{matching}{Character string specifying genotype column name.}
 
-\item{sep}{The separator between JULES COMPLETE}
+\item{sep}{Character separator used to identify clones (default "_").}
 }
 \value{
-The JULES COMPLETE
+A modified data frame where cloned genotype
+levels are collapsed into single combined labels.
 }
 \description{
-Fix clones if they are in the experiment
+Modifies a data frame so that cloned genotypes
+are treated as identical factor levels.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+# Fake cross object
+cross <- list(
+pheno = data.frame(
+Genotype = c("A_B", "C", "D_E")
+)
+)
+# Fake prediction table
+fake_model <- list()
+# Mock predict method
+predict <- function(model, classify, only = NULL) {
+data <- data.frame(
+Genotype = c("A","B","C","D","E"),
+predicted.value = rnorm(5)
+)
+list(pvals = data)
+}
+# Test clone fixing
+df <- data.frame(Genotype = factor(c("A","B","C","D","E")))
+phenfixClones(df, cross)
 }
 }

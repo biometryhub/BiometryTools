@@ -17,9 +17,6 @@ extract(
 \arguments{
 \item{fill}{}
 }
-\value{
-
-}
 \description{
 Title
 }

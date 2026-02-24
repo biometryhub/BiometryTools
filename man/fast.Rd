@@ -9,9 +9,6 @@ fast(model, dat = NULL, term = "fa(Site, 4):Genotype", ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 FAST: overall performance and stability for interpreting Factor Analytic models
 }

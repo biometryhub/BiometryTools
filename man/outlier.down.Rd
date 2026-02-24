@@ -9,9 +9,6 @@ outlier.down(data, model, cutoff = 3)
 \arguments{
 \item{cutoff}{}
 }
-\value{
-
-}
 \description{
 Downweight outliers
 }

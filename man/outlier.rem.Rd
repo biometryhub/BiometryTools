@@ -9,9 +9,6 @@ outlier.rem(data, model, cutoff = 3)
 \arguments{
 \item{cutoff}{}
 }
-\value{
-
-}
 \description{
 Outlier removal function
 }

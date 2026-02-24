@@ -9,9 +9,6 @@ manhattan(mlist, cross, chr.in = NULL, annotate = TRUE, ...)
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Manhattan plot using ggplot
 }

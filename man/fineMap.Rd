@@ -16,9 +16,6 @@ fineMap(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Fine map a \code{wgaim} object
 }

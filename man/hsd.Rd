@@ -15,9 +15,6 @@ hsd(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Title
 }

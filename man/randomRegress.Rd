@@ -17,9 +17,6 @@ randomRegress(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...)
 
 \item{...}{Other parameters passed to \code{\link[asreml:predict.asreml]{asreml::predict.asreml()}}.}
 }
-\value{
-
-}
 \description{
 The function assumes you have a Treatment x Site factor that is a composite of treatments and sites. The function requires no specific ordering of the factor levels.
 }

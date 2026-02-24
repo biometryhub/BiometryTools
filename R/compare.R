@@ -1,11 +1,38 @@
-#' BLUEs LSD/p-value comparison function
+#' Pairwise comparison of BLUEs using LSD or p-values
 #'
-#' @param model An `asreml` model
-#' @param term JULES COMPLETE
-#' @param type The type of comparison. Can take values of `PVAL` or `LSD`.
-#' @param average.LSD JULES COMPLETE
+#' Computes pairwise comparisons among predicted values (typically BLUEs)
+#' from an \code{asreml} model for a given classification term. Uses
+#' \code{predict(..., sed = TRUE)} to obtain predicted values and the
+#' SED (standard error of differences) matrix. Depending on \code{type},
+#' returns either a pairwise LSD matrix or a symmetric matrix of
+#' pairwise p-values derived from Wald contrasts.
 #'
-#' @return
+#' @param model An \code{asreml} fitted model object.
+#' @param term Character string giving the classification term passed to
+#'   \code{predict()}, e.g. \code{"Line"} or an interaction like \code{"Env:Line"}.
+#' @param type Character string specifying the comparison type:
+#'   \code{"LSD"} or \code{"PVAL"}.
+#' @param average.LSD Logical (default \code{FALSE}). If \code{TRUE} and
+#'   \code{type = "LSD"}, returns a single \code{ave.LSD} column computed as the
+#'   mean of the lower-triangular LSD values instead of a full LSD matrix.
+#'
+#' @details
+#' \strong{LSD:} The least significant difference is computed as
+#' \code{LSD = SED * qt(0.025, df = model$nedf, lower.tail = FALSE)}.
+#'
+#' \strong{PVAL:} All pairwise contrasts are constructed and assessed using
+#' a Wald test (via \code{wald.test()}), returning a symmetric p-value matrix.
+#'
+#' Rows with \code{NA} predicted values are dropped, and the corresponding
+#' rows/columns are removed from the SED matrix.
+#'
+#' @return A \code{data.frame} containing the classification column(s),
+#'   predicted values, and either:
+#' \itemize{
+#'   \item an LSD matrix (or \code{ave.LSD} column), or
+#'   \item a symmetric matrix of pairwise p-values.
+#' }
+#'
 #' @export
 #'
 #' @examples

@@ -2,6 +2,7 @@
 % Please edit documentation in R/BiometryTools.R
 \docType{package}
 \name{BiometryTools}
+\alias{BiometryTools-package}
 \alias{BiometryTools}
 \title{BiometryTools: A package containing some useful functions for linear mixed model analysis}
 \description{
@@ -12,3 +13,25 @@ The BiometryTools package provides ...
 The foo functions ...
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://biometryhub.github.io/BiometryTools/}
+  \item Report bugs at \url{https://github.com/biometryhub/BiometryTools/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Sam Rogers \email{biometryhub@adelaide.edu.au} [contributor]
+
+Authors:
+\itemize{
+  \item Julian Taylor \email{biometryhub@adelaide.edu.au}
+}
+
+Other contributors:
+\itemize{
+  \item Russell Edson \email{biometryhub@adelaide.edu.au} [contributor]
+}
+
+}

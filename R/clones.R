@@ -1,15 +1,45 @@
-#' Check whether genetic clones are in the experiment
+#' Test Genetic Clone Similarity in an ASReml Model
 #'
-#' @param model An `asreml` model.
-#' @param cross JULES COMPLETE
-#' @param matching JULES COMPLETE
-#' @param Envir JULES COMPLETE
-#' @param no.samp JULES COMPLETE
-#' @param sep JULES COMPLETE
+#' Evaluates whether genetically related clones show significantly
+#' correlated predicted values from an \code{asreml} model.
 #'
-#' @return A data frame containing JULES COMPLETE
+#' Clone relationships are extracted from a \code{cross} object,
+#' and a permutation test is used to assess whether observed
+#' correlations exceed random expectation.
+#'
+#' @param model An \code{asreml} fitted model object.
+#' @param cross A list-like object containing a \code{$pheno} data frame.
+#' @param matching Character string giving the genotype column name
+#'   within both the model predictions and \code{cross$pheno}.
+#' @param Envir Optional character string specifying an environment
+#'   factor. If supplied, clone testing is performed separately
+#'   within each environment.
+#' @param no.samp Number of random permutations used to estimate
+#'   the null distribution (default = 1000).
+#' @param sep Character separator used to split clone identifiers
+#'   (default = "_").
+#'
+#' @details
+#' For each pair of cloned genotypes:
+#' \enumerate{
+#'   \item Predicted values are extracted from \code{predict()}.
+#'   \item The observed correlation between clone pairs is computed.
+#'   \item A permutation test generates random correlations.
+#'   \item A p-value is computed from the F-distribution.
+#' }
+#'
+#' The Type1 column reports the proportion of permutation samples
+#' with p < 0.05.
+#'
+#' @return A data frame with columns:
+#' \itemize{
+#'   \item \code{Type1}: Estimated type I error rate from permutations
+#'   \item \code{Correlation}: Observed clone correlation
+#'   \item \code{P-value}: Significance test for observed correlation
+#' }
+#'
 #' @export
-#'
+#' 
 #' @examples
 #' \dontrun{
 #' JULES COMPLETE
@@ -58,19 +88,42 @@ phenClones <- function(model, cross, matching = "Genotype", Envir = NULL, no.sam
   res
 }
 
-#' Fix clones if they are in the experiment
+#' Collapse Cloned Genotypes into Single Levels
 #'
-#' @param data The data frame to fix
-#' @param cross JULES COMPLETE
-#' @param matching The column name to match on
-#' @param sep The separator between JULES COMPLETE
+#' Modifies a data frame so that cloned genotypes
+#' are treated as identical factor levels.
 #'
-#' @return The JULES COMPLETE
+#' @param data A data frame containing genotype factor levels.
+#' @param cross A list-like object containing a \code{$pheno} data frame.
+#' @param matching Character string specifying genotype column name.
+#' @param sep Character separator used to identify clones (default "_").
+#'
+#' @return A modified data frame where cloned genotype
+#' levels are collapsed into single combined labels.
+#'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' JULES COMPLETE
+#' # Fake cross object
+#' cross <- list(
+#' pheno = data.frame(
+#' Genotype = c("A_B", "C", "D_E")
+#' )
+#' )
+#' # Fake prediction table
+#' fake_model <- list()
+#' # Mock predict method
+#' predict <- function(model, classify, only = NULL) {
+#' data <- data.frame(
+#' Genotype = c("A","B","C","D","E"),
+#' predicted.value = rnorm(5)
+#' )
+#' list(pvals = data)
+#' }
+#' # Test clone fixing
+#' df <- data.frame(Genotype = factor(c("A","B","C","D","E")))
+#' phenfixClones(df, cross)
 #' }
 phenfixClones <- function(data, cross, matching = "Genotype", sep = "_") {
   mg <- as.character(cross$pheno[[matching]])
