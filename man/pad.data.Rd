@@ -2,18 +2,63 @@
 % Please edit documentation in R/pad.data.R
 \name{pad.data}
 \alias{pad.data}
-\title{Title}
+\title{Pad missing row–column positions within groups}
 \usage{
 pad.data(data, pattern = "Row:Column", split = "Block", keep = 4, fill = NULL)
 }
 \arguments{
-\item{fill}{}
+\item{data}{A data frame.}
+
+\item{pattern}{Character string of the form \code{"Row:Column"} giving the names of
+the two variables that define the row–column layout.}
+
+\item{split}{Character. Name of the column used to split \code{data} into groups
+(default \code{"Block"}). Padding is done within each group.}
+
+\item{keep}{Integer. Column index to copy from existing data into newly added
+rows (default \code{4}). The value copied comes from the first rows of the group
+(recycled as needed). This is typically used to keep a constant identifier
+(e.g. block label or trial id).}
+
+\item{fill}{Optional. Integer or character specifying columns to set to \code{NA}
+in newly created rows. Default \code{NULL} (do nothing).}
+}
+\value{
+A data frame like \code{data}, with additional rows added for missing
+row–column combinations. A column \code{add} is added, with values \code{"old"} for
+original rows and \code{"new"} for padded rows. The result is ordered by the
+row and column variables in \code{pattern}.
 }
 \description{
-Title
+Ensures that, within each level of a grouping variable (e.g. a block),
+every combination of a row factor and a column factor exists.
+Missing row–column positions are added as new rows with \code{NA}s.
+}
+\details{
+For each group defined by \code{split}, the function forms a contingency table
+of \code{Row} by \code{Column}. For any zero-count cell, it adds a new row where:
+\itemize{
+\item \code{Row} and \code{Column} are set to the missing combination,
+\item all other columns are \code{NA} (except \code{keep}, which is copied),
+\item \code{add} is set to \code{"new"}.
+}
+The row/column factors are then re-leveled to be in increasing numeric order
+(assuming their levels are numeric strings).
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+d <- expand.grid(
+  Block = factor(1:2),
+  Row = factor(1:3),
+  Column = factor(1:3)
+)
+
+# Remove one cell to simulate a missing plot
+d <- d[-5, ]
+d # Inspect
+
+pad.data(d, pattern = "Row:Column", split = "Block", keep = 1)
+
 }
+
 }

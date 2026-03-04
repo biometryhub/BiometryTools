@@ -4,7 +4,16 @@
 \alias{compare}
 \title{Pairwise comparison of BLUEs using LSD or p-values}
 \usage{
-compare(model, term = "Line", type = "PVAL", average.LSD = FALSE)
+compare(
+  model,
+  term = "Treatment:Genotype",
+  by = NULL,
+  omit.string = NULL,
+  type = "HSD",
+  pev = TRUE,
+  fw.method = "none",
+  ...
+)
 }
 \arguments{
 \item{model}{An \code{asreml} fitted model object.}

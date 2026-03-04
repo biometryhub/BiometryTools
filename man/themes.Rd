@@ -6,7 +6,7 @@
 \alias{theme_design_heat}
 \alias{theme_scatter}
 \alias{theme_barplot}
-\title{Custom \code{ggplot2} themes}
+\title{Custom ggplot2 themes}
 \usage{
 theme_design(base_size = 11, base_family = "")
 
@@ -17,24 +17,59 @@ theme_scatter(base_size = 11, base_family = "")
 theme_barplot(base_size = 11, base_family = "")
 }
 \arguments{
-\item{base_size}{Plot font size, given in pts.}
+\item{base_size}{Base font size (in points).}
 
-\item{base_family}{Font family used for the plot.}
+\item{base_family}{Base font family.}
+}
+\value{
+A \code{ggplot2} theme object.
 }
 \description{
-Themes that provide some custom styling for \code{ggplot2} plots.
+Minimal theme helpers used across the package.
+
+A clean theme for general plots with the legend removed.
+
+A design theme variant intended for heatmaps (legend kept; x labels rotated).
+
+Theme tuned for scatter plots (light grid and a panel border).
+
+Theme tuned for bar plots (legend at bottom; x labels rotated).
+}
+\details{
+These functions return \code{ggplot2::theme()} objects that can be added to a plot
+with \code{+}.
+\itemize{
+\item \code{theme_design()} removes most grid/axes clutter and hides the legend.
+\item \code{theme_design_heat()} is intended for heatmaps (keeps legend, rotates x labels).
+\item \code{theme_scatter()} uses a light grid and a panel border; larger text defaults.
+\item \code{theme_barplot()} places the legend at the bottom and rotates x labels.
+}
 }
 \examples{
 \dontrun{
-SAM COMPLETE
+library(ggplot2)
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  theme_design()
 }
 \dontrun{
-SAM COMPLETE
+library(ggplot2)
+df <- expand.grid(x = letters[1:5], y = letters[1:5])
+df$z <- seq_len(nrow(df))
+ggplot(df, aes(x, y, fill = z)) +
+  geom_tile() +
+  theme_design_heat()
 }
 \dontrun{
-SAM COMPLETE
+library(ggplot2)
+ggplot(mtcars, aes(wt, mpg)) +
+  geom_point() +
+  theme_scatter()
 }
 \dontrun{
-SAM COMPLETE
+library(ggplot2)
+ggplot(mtcars, aes(factor(cyl), fill = factor(gear))) +
+  geom_bar() +
+  theme_barplot()
 }
 }

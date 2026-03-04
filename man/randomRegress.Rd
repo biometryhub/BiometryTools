@@ -4,7 +4,14 @@
 \alias{randomRegress}
 \title{Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments}
 \usage{
-randomRegress(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...)
+randomRegress(
+  model,
+  Env = "TSite:Variety",
+  levs = NULL,
+  sep = "-",
+  pev = TRUE,
+  ...
+)
 }
 \arguments{
 \item{model}{An \code{asreml} object. The final full Treatment x Site x Variety model}

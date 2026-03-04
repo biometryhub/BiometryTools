@@ -2,14 +2,9 @@
 % Please edit documentation in R/associate.R
 \name{associate}
 \alias{associate}
-\title{Associate BLUEs and BLUPs from an ASReml Model}
+\title{Associate BLUEs with BLUPs form predict calls of the same model}
 \usage{
-associate(
-  model,
-  ran.term = "Treatment:Cultivar",
-  fix.term = "Treatment:Type",
-  ...
-)
+associate(model, ran.term = "Site:Genotype", fix.term = "Site:Type", ...)
 }
 \arguments{
 \item{model}{An \code{asreml} model object.
