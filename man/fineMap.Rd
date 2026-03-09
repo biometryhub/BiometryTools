@@ -70,6 +70,13 @@ marker removed, then extracts an effect estimate and its variance to compute
 a test statistic, p-value, and LOD.
 }
 }
+\section{Note}{
+
+\code{fineMap()} assigns an object named \code{covObj} into the calling
+environment (\code{parent.frame()}). This is required by internal \code{wgaim}
+update routines that expect \code{covObj} to exist during model refits.
+}
+
 \examples{
 \dontrun{
 JULES COMPLETE
