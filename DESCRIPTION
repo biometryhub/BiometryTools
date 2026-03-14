@@ -22,7 +22,6 @@ License: MIT + file LICENSE
 URL: https://biometryhub.github.io/BiometryTools/
 BugReports: https://github.com/biometryhub/BiometryTools/issues
 Imports: 
-    ASExtras4,
     crayon,
     ggplot2,
     glue,
@@ -30,6 +29,7 @@ Imports:
     RColorBrewer,
     wgaim
 Suggests: 
+    ASExtras4,
     lubridate,
     maptools,
     ncdf4,
