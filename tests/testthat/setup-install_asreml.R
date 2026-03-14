@@ -1,4 +1,3 @@
-testthat::skip("Skipping set-install_asreml tests during development")
 expect_file_2 <- function(fn, args, pat, dir = ".", missing = F) {
   x <- do.call(fn, args)
   if (!missing) {

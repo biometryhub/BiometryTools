@@ -1,13 +1,15 @@
-testthat::skip("Skipping test-install_asreml tests during development")
 skip_if(R.version$status == "Under development (unstable)")
+skip_if(getRversion() > "4.0", "install_asreml() URL table is outdated for newer R versions")
 
 test_that("Installation works", {
     expect_equal(install_asreml(), TRUE)
 })
 
 test_that("Installation provides output on success", {
-    # skip_if(R.version$status == "Under development (unstable)")
-    if("asreml" %in% installed.packages()[,1]){remove.packages("asreml")}
+    if ("asreml" %in% rownames(installed.packages())) {
+        remove.packages("asreml")
+    }
+
     expect_message(install_asreml(), "ASreml-R successfully installed!")
 })
 

@@ -30,15 +30,15 @@
 #'
 #' @examples
 #' \dontrun{
-ped <- data.frame(
-  id   = c("A","B","C","D"),
-  dam  = c(NA, NA, "A", "A"),
-  sire = c(NA, NA, "B", "B")
-)
-
-data <- data.frame(id = c("C","D"))
-
-prune(ped, data)
+#' ped <- data.frame(
+#'   id   = c("A","B","C","D"),
+#'   dam  = c(NA, NA, "A", "A"),
+#'   sire = c(NA, NA, "B", "B")
+#' )
+#'
+#' data <- data.frame(id = c("C","D"))
+#'
+#' prune(ped, data)
 #' }
 prune <- function(ped, data, gen = NULL)
 {
@@ -60,7 +60,7 @@ prune <- function(ped, data, gen = NULL)
     return(ped[what,])
 }
 
-#' Count generations in a pedigree
+#' Count generations in a pedigree (Does this makes sense for plant breeding??)
 #'
 #' Computes the generation number for each individual in a pedigree structure.
 #' Founders (individuals with no recorded parents) are assigned generation 1,

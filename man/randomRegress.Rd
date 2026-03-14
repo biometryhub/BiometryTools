@@ -2,7 +2,7 @@
 % Please edit documentation in R/regresion_functions.R
 \name{randomRegress}
 \alias{randomRegress}
-\title{Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments}
+\title{Convert treatment-specific BLUPs into efficiency and responsiveness}
 \usage{
 randomRegress(
   model,
@@ -14,21 +14,82 @@ randomRegress(
 )
 }
 \arguments{
-\item{model}{An \code{asreml} object. The final full Treatment x Site x Variety model}
+\item{model}{A fitted \code{asreml} model object containing the full
+treatment-by-site-by-variety structure.}
 
-\item{Env}{Treatment x Site x Variety term as a character.}
+\item{Env}{A character string giving the environment-by-variety term to be
+transformed, for example \code{"TSite:Variety"}.}
 
-\item{levs}{Named treatment levels used in transformation. e.g. \code{c("Treat1", "Treat2")} would regress Treat2 on Treat1}
+\item{levs}{A character vector of length 2 giving the treatment levels used
+in the transformation. The second treatment is regressed on the first.}
 
-\item{sep}{separator used for Treat x Site names (if multi-x model), if not present assumes single section}
+\item{sep}{A character string giving the separator used in composite
+treatment-by-site level names. If no separator is present, the function
+assumes a single section.}
 
-\item{...}{Other parameters passed to \code{\link[asreml:predict.asreml]{asreml::predict.asreml()}}.}
+\item{pev}{Logical; if \code{TRUE}, use the transformed prediction error
+variance matrix. If \code{FALSE}, subtract the transformed prediction error
+variance from the corresponding genetic variance structure.}
+
+\item{...}{Additional arguments passed to \code{predict.asreml()}.}
+}
+\value{
+A list with components:
+\describe{
+\item{blups}{A data frame containing site, variety, BLUPs for the two
+specified treatment levels, the derived responsiveness value, and an HSD
+summary where available.}
+\item{TGmat}{The transformed covariance matrix under the
+efficiency/responsiveness parameterization.}
+\item{Gmat}{The original covariance matrix for the supplied environment
+term.}
+\item{beta}{Regression coefficients used to regress the second treatment on
+the first within each site.}
+\item{sigr}{Responsiveness variances within each site.}
+\item{tmat}{The linear transformation matrix applied to \code{Gmat}.}
+}
 }
 \description{
-The function assumes you have a Treatment x Site factor that is a composite of treatments and sites. The function requires no specific ordering of the factor levels.
+Re-parameterizes treatment-by-site-by-variety BLUPs from a fitted
+\code{asreml} model into an efficiency/responsiveness representation.
+}
+\details{
+The function assumes that the environment term supplied in \code{Env}
+represents a treatment-by-site factor crossed with variety, for example
+\code{"TSite:Variety"}, where levels of \code{TSite} combine treatment and
+site information.
+
+Given two treatment levels in \code{levs}, the function treats the first as
+a baseline ("efficiency") component and expresses the second as a
+responsiveness component after regression on the first.
+
+For each site (or section), the function extracts the \eqn{2 \times 2}
+covariance matrix for the two treatment levels and computes:
+\deqn{
+\beta = \frac{\mathrm{Cov}(T_1, T_2)}{\mathrm{Var}(T_1)}
+}
+and the responsiveness variance:
+\deqn{
+\sigma_r^2 = \mathrm{Var}(T_2)(1 - \rho^2),
+}
+where \eqn{\rho} is the correlation between the two treatment effects.
+
+The transformed responsiveness BLUP is then:
+\deqn{
+b_{\mathrm{resp}} = b_{T_2} - \beta b_{T_1}.
+}
+
+The function also returns the transformed covariance matrix
+\eqn{G_{\mathrm{trans}} = T G T^\top} corresponding to the
+efficiency/responsiveness parameterization.
+}
+\note{
+This function assumes exactly two treatment levels in \code{levs}. It is
+primarily intended for treatment-by-site composite factors where the first
+part or second part of the composite level name identifies treatment.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+TODO
 }
 }

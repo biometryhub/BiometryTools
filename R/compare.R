@@ -37,67 +37,90 @@
 #'
 #' @examples
 #' \dontrun{
-#' JULES COMPLETE
+#' TODO
 #' }
-compare <- function(model, term = "Line", type = "PVAL", average.LSD = FALSE) {
-  pred <- predict(model, classify = term, sed = TRUE)
-  nterm <- unlist(strsplit(term, ":"))
-  pv <- pred$pvals
-  sed <- pred$sed
-  if (any(wh <- is.na(pv$predicted.value))) {
-    pv <- pv[!wh, ]
-    sed <- sed[!wh, !wh]
-  }
-  if (length(nterm) > 1) {
-    labs <- paste(pv[[nterm[1]]], pv[[nterm[2]]], sep = ":")
-  } else {
-    labs <- pv[[term]]
-  }
-  if (type %in% "LSD") {
-    add <- sed * qt(0.025, df = model$nedf, lower.tail = FALSE)
-    dimnames(add)[[2]] <- paste("LSD", labs, sep = ":")
-    if (average.LSD) {
-      add <- cbind.data.frame(ave.LSD = rep(mean(add[lower.tri(add)]), dim(pv)[1]))
+compare <- function(model, term = "Treatment:Genotype", by = NULL, omit.string = NULL, type = "HSD", pev = TRUE, fw.method = "none", ...){
+    pred <- predict(model, classify = term, vcov = TRUE, ...)
+    terms <- unlist(strsplit(term, ":"))
+    pv <- pred$pvals
+    inds <- !is.na(pv$predicted.value)
+    if(!pev & all(terms %in% all.vars(model$call$random))){
+        varm <- summary(model, vparameters = TRUE)$vparameters[[term]]
+        if(length(terms) > 1)
+            len <- table(pv[,1])[1]
+        else len <- nrow(pv)
+        vara <- kronecker(varm, diag(len)) - pred$vcov
+        vara[inds, inds]
+    } else vara <- pred$vcov[inds, inds]
+    pv <- pv[inds,]
+    section <- FALSE
+    if(!is.null(by)){
+        bys <- unlist(strsplit(by, ":"))
+        if(all(terms %in% bys))
+            stop("Argument \"by\" indicates no multiple comparisons are being made.")
+        if(!all(bys %in% terms))
+            stop("Some terms in argument \"by\" are not in \"term\".")
+        if(length(bys) > 1)
+            pv[[by]] <- apply(pv[,bys], 1, function(el) paste(el, collapse = ":"))
+    } else{
+        by <- term
+        pv[[by]] <- by
     }
-  } else if (type %in% "PVAL") {
-    ord <- 1:nrow(pv)
-    if (length(nterm) > 1) {
-      fix.form <- paste(deparse(model$call$fixed), nterm[1], nterm[2], "1", sep = " - ")
-      model <- update(model, fixed. = fix.form, Cfixed = TRUE)
-      coefs <- model$coefficients$fixed
-      wh <- coefs[, 1] == 0
-      cnams <- rownames(coefs)[!wh]
-      sp <- strsplit(cnams, ":")
-      left <- sapply(sp, "[", 1)[1]
-      right <- sapply(sp, "[", 2)[1]
-      leftn <- 1
-      rightn <- 2
-      if (any(grep(nterm[1], right))) {
-        leftn <- 2
-      }
-      rightn <- 1
-      left <- gsub(paste(nterm[1], "_", sep = ""), "", sapply(sp, "[", leftn))
-      right <- gsub(paste(nterm[2], "_", sep = ""), "", sapply(sp, "[", rightn))
-      ord <- pmatch(labs, paste(left, right, sep = ":"))
-    } else {
-      fix.form <- paste(deparse(model$call$fixed), "1", sep = " - ")
-      model <- update(model, fixed. = fix.form, Cfixed = TRUE)
+    if(!is.null(omit.string)){
+        oind <- grep(omit.string, as.character(pv[[gnam]]))
+        if(length(oind)){
+            pv <- pv[-oind,]
+            sed <- sed[-oind,-oind]
+        }
     }
-    cb <- t(combn(nrow(pv), 2))
-    mat <- matrix(0, nrow = nrow(cb), ncol = nrow(pv))
-    mat[cbind(1:nrow(mat), cb[, 1])] <- 1
-    mat[cbind(1:nrow(mat), cb[, 2])] <- -1
-    lenf <- length(model$coefficients$fixed)
-    cc <- list(coef = (1:lenf)[!wh], type = "con", comp = mat)
-    wt <- wald.test(model, list(cc))$Contrasts
-    pval <- wt$"P-Value"
-    add <- matrix(0, nrow = nrow(pv), ncol = nrow(pv))
-    add[lower.tri(add)] <- pval
-    add <- add + t(add)
-    add <- add[ord, ord]
-    dimnames(add)[[2]] <- paste("PVAL", labs, sep = ":")
-  } else {
-    stop("This type is not defined.")
-  }
-  cbind.data.frame(pv[, 1:(length(nterm) + 1)], add)
+    sst <- as.character(pv[[by]])
+    um <- unique(sst)
+    if(type %in% c("HSD","LSD")){
+        tsd <- avsed <- c()
+        for(k in 1:length(um)){
+            sinds <- sst %in% um[k]
+            svar <- vara[sinds, sinds]
+            avsed[k] <- sqrt(mean(apply(combn(diag(svar), 2), 2, sum) - 2*svar[lower.tri(svar)]))
+            if(type == "HSD")
+                tsd[k] <- (avsed[k]/sqrt(2))*qtukey(0.95, length(sinds), model$nedf)
+            else tsd[k] <- avsed[k]*qt(0.025, df = model$nedf, lower.tail = FALSE)
+        }
+        pv <- cbind.data.frame(pv[,1:(length(terms) + 2)])
+        pv[[type]] <- rep(tsd, times = table(sst))
+        pv[["sed"]] <- rep(avsed, times = table(sst))
+    }
+    else if(type %in% "PVAL"){
+        pvs <- split(pv, pv[[by]])
+        yvar <- deparse(model$call$fixed[[2]])
+        xvar <- labels(terms(as.formula(model$call$fixed)))
+        fix.form <- as.formula(paste(yvar, " ~ ", xvar[length(xvar)], " - 1", sep = ""))
+        model <- update(model, fixed. = fix.form, Cfixed = TRUE)
+        coefs <- model$coefficients$fixed
+        cinds <- grep(paste(terms, collapse = ".*"), rownames(coefs))
+        coefs <- coefs[cinds,,drop = FALSE]
+        for(k in 1:length(um)){
+            umt <- paste(strsplit(um[k], ":")[[1]], collapse = ".*")
+            sind <- cinds[grep(umt, rownames(coefs))]
+            scf <- coefs[grep(umt, rownames(coefs)),]
+            sna <- scf == 0
+            aind <- sind[!sna]
+            pvt <- pvs[[k]]
+            cb <- t(combn(nrow(pvt), 2))
+            mat <- matrix(0, nrow = nrow(cb), ncol = nrow(pvt))
+            mat[cbind(1:nrow(mat), cb[,1])] <- 1
+            mat[cbind(1:nrow(mat), cb[,2])] <- -1
+            cc <- list(coef = aind, type = "con", comp = mat)
+            wt <- waldTest(model, list(cc))$Contrasts
+            pval <- wt$"P-Value"
+            add <- matrix(0, nrow = nrow(pvt), ncol = nrow(pvt))
+            add[lower.tri(add)] <- stats::p.adjust(pval, method = fw.method)
+            add <- add + t(add)
+            #            add <- add[ord, ord]
+            dimnames(add)[[2]] <- apply(pvt[,terms], 1, function(el) paste(el, collapse = ":"))
+            paste(as.character(pvt[[terms[[1]]]]), as.character(pvt[[terms[2]]]), sep = ":")
+            pvs[[k]] <- cbind.data.frame(pvs[[k]][,1:(length(terms) + 2)], add)
+        }
+        pv <- pvs
+    } else stop("Please use one of the allowable types, \"HSD\",\"LSD\",\"PVAL\"")
+    pv
 }

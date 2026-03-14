@@ -19,3 +19,10 @@ A POSIXct object for the local time of sunset.
 \description{
 Return the time of sunset given the date and GPS coordinates.
 }
+\examples{
+\dontrun{
+library(lubridate)
+date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
+sunset_time(date, -35.69167, 136.9650)
+}
+}

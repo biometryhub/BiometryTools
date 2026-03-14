@@ -56,6 +56,6 @@ rows/columns are removed from the SED matrix.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+TODO
 }
 }

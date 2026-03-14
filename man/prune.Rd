@@ -49,6 +49,3 @@ data <- data.frame(id = c("C","D"))
 prune(ped, data)
 }
 }
-\references{
-TODO
-}

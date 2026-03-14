@@ -1,20 +1,78 @@
-#' Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments
+#' Convert treatment-specific BLUPs into efficiency and responsiveness
 #'
-#' The function assumes you have a Treatment x Site factor that is a composite of treatments and sites. The function requires no specific ordering of the factor levels.
+#' Re-parameterizes treatment-by-site-by-variety BLUPs from a fitted
+#' \code{asreml} model into an efficiency/responsiveness representation.
 #'
-#' @param model An `asreml` object. The final full Treatment x Site x Variety model
-#' @param Env Treatment x Site x Variety term as a character.
-#' @param levs Named treatment levels used in transformation. e.g. `c("Treat1", "Treat2")` would regress Treat2 on Treat1
-#' @param sep separator used for Treat x Site names (if multi-x model), if not present assumes single section
-#' @param ... Other parameters passed to [asreml::predict.asreml()].
+#' The function assumes that the environment term supplied in \code{Env}
+#' represents a treatment-by-site factor crossed with variety, for example
+#' \code{"TSite:Variety"}, where levels of \code{TSite} combine treatment and
+#' site information.
+#'
+#' Given two treatment levels in \code{levs}, the function treats the first as
+#' a baseline ("efficiency") component and expresses the second as a
+#' responsiveness component after regression on the first.
+#'
+#' @param model A fitted \code{asreml} model object containing the full
+#'   treatment-by-site-by-variety structure.
+#' @param Env A character string giving the environment-by-variety term to be
+#'   transformed, for example \code{"TSite:Variety"}.
+#' @param levs A character vector of length 2 giving the treatment levels used
+#'   in the transformation. The second treatment is regressed on the first.
+#' @param sep A character string giving the separator used in composite
+#'   treatment-by-site level names. If no separator is present, the function
+#'   assumes a single section.
+#' @param pev Logical; if \code{TRUE}, use the transformed prediction error
+#'   variance matrix. If \code{FALSE}, subtract the transformed prediction error
+#'   variance from the corresponding genetic variance structure.
+#' @param ... Additional arguments passed to \code{predict.asreml()}.
+#'
+#' @details
+#' For each site (or section), the function extracts the \eqn{2 \times 2}
+#' covariance matrix for the two treatment levels and computes:
+#' \deqn{
+#' \beta = \frac{\mathrm{Cov}(T_1, T_2)}{\mathrm{Var}(T_1)}
+#' }
+#' and the responsiveness variance:
+#' \deqn{
+#' \sigma_r^2 = \mathrm{Var}(T_2)(1 - \rho^2),
+#' }
+#' where \eqn{\rho} is the correlation between the two treatment effects.
+#'
+#' The transformed responsiveness BLUP is then:
+#' \deqn{
+#' b_{\mathrm{resp}} = b_{T_2} - \beta b_{T_1}.
+#' }
+#'
+#' The function also returns the transformed covariance matrix
+#' \eqn{G_{\mathrm{trans}} = T G T^\top} corresponding to the
+#' efficiency/responsiveness parameterization.
 #'
 #' @return
-#' @export
+#' A list with components:
+#' \describe{
+#'   \item{blups}{A data frame containing site, variety, BLUPs for the two
+#'   specified treatment levels, the derived responsiveness value, and an HSD
+#'   summary where available.}
+#'   \item{TGmat}{The transformed covariance matrix under the
+#'   efficiency/responsiveness parameterization.}
+#'   \item{Gmat}{The original covariance matrix for the supplied environment
+#'   term.}
+#'   \item{beta}{Regression coefficients used to regress the second treatment on
+#'   the first within each site.}
+#'   \item{sigr}{Responsiveness variances within each site.}
+#'   \item{tmat}{The linear transformation matrix applied to \code{Gmat}.}
+#' }
+#'
+#' @note
+#' This function assumes exactly two treatment levels in \code{levs}. It is
+#' primarily intended for treatment-by-site composite factors where the first
+#' part or second part of the composite level name identifies treatment.
 #'
 #' @examples
 #' \dontrun{
-#' JULES COMPLETE
-#' }
+#' TODO
+#'}
+#' @export
 randomRegress <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", pev = TRUE, ...){
     if(is.null(levs))
         stop("Treatment levels cannnot be NULL.")
@@ -99,8 +157,82 @@ randomRegress <- function(model, Env = "TSite:Variety", levs = NULL, sep = "-", 
     list(blups = blups, TGmat = TGmat, Gmat = Gmat, beta = beta, sigr = sigr, tmat = tmat)
 }
 
-## BLUEs regression
 
+#' Compute a fixed-effect responsiveness index from predicted values
+#'
+#' Forms a regression-based responsiveness index from predicted values obtained
+#' from a fitted \code{asreml} model.
+#'
+#' The function identifies two treatment levels within a prediction term and
+#' compares matched predictions across a remaining regression variable
+#' (for example genotype). The resulting responsiveness index is computed either
+#' as:
+#' \itemize{
+#'   \item residuals from a simple linear regression of the second treatment on
+#'   the first, or
+#'   \item model-based conditional residuals using the prediction covariance
+#'   matrix.
+#' }
+#'
+#' @param model A fitted \code{asreml} model object.
+#' @param term A character string specifying the prediction term, for example
+#'   \code{"Treatment:Genotype"} or \code{"Treatment:Site:Genotype"}.
+#' @param by An optional character string specifying variables used to split the
+#'   analysis into sections. These variables must be contained in \code{term}.
+#' @param levs A character vector of length 2 giving the treatment levels to be
+#'   compared.
+#' @param simple Logical; if \code{TRUE}, compute responsiveness as residuals
+#'   from a simple linear regression of treatment 2 on treatment 1. If
+#'   \code{FALSE}, compute responsiveness using the model-based prediction
+#'   covariance matrix.
+#'
+#' @details
+#' The function first predicts the full \code{term} using
+#' \code{predict.asreml(..., vcov = TRUE)}. It then identifies:
+#' \itemize{
+#'   \item the factor containing the treatment levels in \code{levs},
+#'   \item optional grouping variables in \code{by}, and
+#'   \item the remaining variable(s) used to match observations across the two
+#'   treatment levels.
+#' }
+#'
+#' For each split defined by \code{by}, matched predictions are extracted for
+#' the two treatment levels. If \code{simple = TRUE}, a linear regression
+#' \eqn{y_2 \sim y_1} is fitted and the residuals are returned as the
+#' responsiveness index. If \code{simple = FALSE}, the responsiveness index is
+#' computed from the conditional mean structure implied by the prediction
+#' covariance matrix.
+#'
+#' The function also reports standard errors, an average SED, and a Tukey-style
+#' HSD summary for the responsiveness index.
+#'
+#' @return
+#' A data frame containing:
+#' \describe{
+#'   \item{Split}{The grouping level defined by \code{by}, or a default label if
+#'   no grouping is used.}
+#'   \item{Regress.Var}{The matching regression unit, for example genotype.}
+#'   \item{\code{levs[1]}}{Predicted value under the first treatment level.}
+#'   \item{\code{levs[2]}}{Predicted value under the second treatment level.}
+#'   \item{reponse.index}{The derived responsiveness index.}
+#'   \item{std.error}{Standard error of the responsiveness index.}
+#'   \item{HSD}{A Tukey-style HSD summary based on the average pairwise SED.}
+#'   \item{sed}{Average pairwise SED of the responsiveness index.}
+#' }
+#'
+#' @note
+#' This function assumes exactly two treatment levels in \code{levs}. It also
+#' assumes that matched observations across treatments can be identified using
+#' the remaining variable(s) in \code{term} after removing the treatment factor
+#' and any grouping variables in \code{by}.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' TODO
+#' }
+#'
 fixedRegress <- function(model, term = "Treatment:Genotype", by = NULL, levs = NULL, simple = TRUE){
     pterm <- term
     if(is.null(levs))
@@ -184,138 +316,4 @@ fixedRegress <- function(model, term = "Treatment:Genotype", by = NULL, levs = N
     }
     resp.list <- resp.list[!sapply(resp.list, is.null)]
     do.call("rbind.data.frame", resp.list)
-}
-
-compare <- function(model, term = "Treatment:Genotype", by = NULL, omit.string = NULL, type = "HSD", pev = TRUE, fw.method = "none", ...){
-    pred <- predict(model, classify = term, vcov = TRUE, ...)
-    terms <- unlist(strsplit(term, ":"))
-    pv <- pred$pvals
-    inds <- !is.na(pv$predicted.value)
-    if(!pev & all(terms %in% all.vars(model$call$random))){
-        varm <- summary(model, vparameters = TRUE)$vparameters[[term]]
-        if(length(terms) > 1)
-            len <- table(pv[,1])[1]
-        else len <- nrow(pv)
-        vara <- kronecker(varm, diag(len)) - pred$vcov
-        vara[inds, inds]
-    } else vara <- pred$vcov[inds, inds]
-    pv <- pv[inds,]
-    section <- FALSE
-    if(!is.null(by)){
-        bys <- unlist(strsplit(by, ":"))
-        if(all(terms %in% bys))
-            stop("Argument \"by\" indicates no multiple comparisons are being made.")
-        if(!all(bys %in% terms))
-            stop("Some terms in argument \"by\" are not in \"term\".")
-        if(length(bys) > 1)
-            pv[[by]] <- apply(pv[,bys], 1, function(el) paste(el, collapse = ":"))
-    } else{
-        by <- term
-        pv[[by]] <- by
-    }
-    if(!is.null(omit.string)){
-        oind <- grep(omit.string, as.character(pv[[gnam]]))
-        if(length(oind)){
-            pv <- pv[-oind,]
-            sed <- sed[-oind,-oind]
-        }
-    }
-    sst <- as.character(pv[[by]])
-    um <- unique(sst)
-    if(type %in% c("HSD","LSD")){
-        tsd <- avsed <- c()
-        for(k in 1:length(um)){
-            sinds <- sst %in% um[k]
-            svar <- vara[sinds, sinds]
-            avsed[k] <- sqrt(mean(apply(combn(diag(svar), 2), 2, sum) - 2*svar[lower.tri(svar)]))
-            if(type == "HSD")
-                tsd[k] <- (avsed[k]/sqrt(2))*qtukey(0.95, length(sinds), model$nedf)
-            else tsd[k] <- avsed[k]*qt(0.025, df = model$nedf, lower.tail = FALSE)
-        }
-        pv <- cbind.data.frame(pv[,1:(length(terms) + 2)])
-        pv[[type]] <- rep(tsd, times = table(sst))
-        pv[["sed"]] <- rep(avsed, times = table(sst))
-    }
-    else if(type %in% "PVAL"){
-        pvs <- split(pv, pv[[by]])
-        yvar <- deparse(model$call$fixed[[2]])
-        xvar <- labels(terms(as.formula(model$call$fixed)))
-        fix.form <- as.formula(paste(yvar, " ~ ", xvar[length(xvar)], " - 1", sep = ""))
-        model <- update(model, fixed. = fix.form, Cfixed = TRUE)
-        coefs <- model$coefficients$fixed
-        cinds <- grep(paste(terms, collapse = ".*"), rownames(coefs))
-        coefs <- coefs[cinds,,drop = FALSE]
-        for(k in 1:length(um)){
-            umt <- paste(strsplit(um[k], ":")[[1]], collapse = ".*")
-            sind <- cinds[grep(umt, rownames(coefs))]
-            scf <- coefs[grep(umt, rownames(coefs)),]
-            sna <- scf == 0
-            aind <- sind[!sna]
-            pvt <- pvs[[k]]
-            cb <- t(combn(nrow(pvt), 2))
-            mat <- matrix(0, nrow = nrow(cb), ncol = nrow(pvt))
-            mat[cbind(1:nrow(mat), cb[,1])] <- 1
-            mat[cbind(1:nrow(mat), cb[,2])] <- -1
-            cc <- list(coef = aind, type = "con", comp = mat)
-            wt <- waldTest(model, list(cc))$Contrasts
-            pval <- wt$"P-Value"
-            add <- matrix(0, nrow = nrow(pvt), ncol = nrow(pvt))
-            add[lower.tri(add)] <- stats::p.adjust(pval, method = fw.method)
-            add <- add + t(add)
-            #            add <- add[ord, ord]
-            dimnames(add)[[2]] <- apply(pvt[,terms], 1, function(el) paste(el, collapse = ":"))
-            paste(as.character(pvt[[terms[[1]]]]), as.character(pvt[[terms[2]]]), sep = ":")
-            pvs[[k]] <- cbind.data.frame(pvs[[k]][,1:(length(terms) + 2)], add)
-        }
-        pv <- pvs
-    } else stop("Please use one of the allowable types, \"HSD\",\"LSD\",\"PVAL\"")
-    pv
-}
-
-## BLUEs regression
-
-#' Fixed regression for doing stuff
-#'
-#' @param model
-#' @param term
-#' @param levs
-#' @param robust
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' JULES COMPLETE
-#' }
-fixedRegress <- function(model, term = "Treatment:Genotype", levs = c("9 cm", "Control"), robust = TRUE) {
-  pred <- predict(model, classify = term, vcov = TRUE)
-  terms <- unlist(strsplit(term, ":"))
-  tnam <- terms[1]
-  gnam <- terms[2]
-  wt1 <- pred$pvals[[tnam]] %in% levs[1]
-  wt2 <- pred$pvals[[tnam]] %in% levs[2]
-  ptreat <- pred$pvals$predicted.value[wt1]
-  pcont <- pred$pvals$predicted.value[wt2]
-  vc <- as.matrix(pred$vcov)
-  s22 <- vc[wt2, wt2]
-  if (robust) {
-    s11 <- vc[wt1, wt1]
-    s12 <- vc[wt1, wt2]
-    resp <- ptreat - s12 %*% solve(s22) %*% pcont
-    resp.var <- s11 - s12 %*% solve(s22) %*% t(s12)
-    rdf <- model$nedf
-  } else {
-    lmr <- lm(ptreat ~ pcont)
-    resp <- lmr$residuals
-    xm <- model.matrix(~pcont)
-    vmat <- (diag(length(ptreat)) - xm %*% solve(t(xm) %*% xm) %*% t(xm))
-    resp.var <- ((vmat) %*% t(vmat)) * (summary(lmr)$sigma^2)
-    rdf <- lmr$df.residual
-  }
-  std.error <- sqrt(diag(resp.var))
-  sed <- sqrt(apply(combn(diag(resp.var), 2), 2, sum) - 2 * resp.var[lower.tri(resp.var)])
-  respd <- cbind.data.frame(Genotype = levels(pred$pvals[[gnam]]), reponse.index = resp, std.error = std.error)
-  respd$HSD <- (mean(sed) / sqrt(2)) * qtukey(0.95, length(ptreat), df = rdf)
-  respd
 }
