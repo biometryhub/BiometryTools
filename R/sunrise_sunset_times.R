@@ -48,9 +48,11 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' library(lubridate)
 #' date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
 #' sunrise_time(date, -35.69167, 136.9650)
+#' }
 sunrise_time <- function(datetime, latitude, longitude) {
   coordinates <- sp::SpatialPoints(
     matrix(c(longitude, latitude), ncol = 2),
@@ -76,10 +78,12 @@ sunrise_time <- function(datetime, latitude, longitude) {
 #'
 #' @export
 #'
-#' @example
+#' @examples
+#' \dontrun{
 #' library(lubridate)
 #' date <- as_datetime("2020-01-01", tz = "Australia/Adelaide")
 #' sunset_time(date, -35.69167, 136.9650)
+#' }
 sunset_time <- function(datetime, latitude, longitude) {
   coordinates <- sp::SpatialPoints(
     matrix(c(longitude, latitude), ncol = 2),

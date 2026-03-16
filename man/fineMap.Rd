@@ -2,7 +2,7 @@
 % Please edit documentation in R/fineMap.R
 \name{fineMap}
 \alias{fineMap}
-\title{Fine map a \code{wgaim} object}
+\title{Fine-map a QTL region around a nominated marker in a fitted \code{wgaim} model}
 \usage{
 fineMap(
   model,
@@ -14,14 +14,69 @@ fineMap(
 )
 }
 \arguments{
-\item{...}{}
+\item{model}{A fitted \code{wgaim} object (typically fit with ASReml-R via \code{asreml}).
+The object must contain \code{model$QTL} components used by \code{wgaim}.}
+
+\item{intervalObj}{A \code{qtl::cross} object containing genotype data used for
+interval mapping or genotype imputation. Must inherit class \code{"cross"}.}
+
+\item{mark}{Character scalar. The name of the focal marker around which to fine-map.
+This must be a marker present in \code{intervalObj}.}
+
+\item{flanking}{Integer. Number of markers to include on each side of \code{mark}
+when defining the scan window. Default is \code{50}.}
+
+\item{exclusion.window}{Numeric. Distance threshold for excluding nearby markers
+when constructing the background marker set for each candidate marker. Markers
+with \code{abs(dist_i - dist_j) < exclusion.window} are excluded. Default is \code{10000}.}
+
+\item{...}{Additional arguments passed to \code{update.asreml()} when refitting
+the model for each candidate marker.}
 }
 \value{
-
+A data frame with one row per scanned marker in the flanking window and columns:
+\describe{
+\item{mark}{Marker name (as in \code{qtl::pull.map(intervalObj, chr)}).}
+\item{dist}{Map position of the marker (units as returned by \code{qtl::pull.map()}).}
+\item{pvalue}{Per-marker p-value derived from a Wald-style statistic.}
+\item{LOD}{Per-marker LOD score derived from the same statistic.}
+}
 }
 \description{
-Fine map a \code{wgaim} object
+Given a fitted \code{wgaim} object and a \code{qtl::cross} object containing
+interval- or imputation-based genotype data, \code{fineMap()} scans a window
+of markers around a nominated marker and refits the model for each candidate
+marker. For each refit, the function extracts the candidate marker effect
+(either from the fixed or random component, depending on the model method),
+computes a Wald-style test statistic, and reports a per-marker p-value and
+Logarithm of the Odds(LOD).
 }
+\details{
+The function:
+\enumerate{
+\item Extracts genotype predictors from \code{intervalObj} (either
+\code{interval.data} or \code{imputed.data}, depending on \code{model$QTL$type}).
+\item Aligns genotype rows to the phenotype rows used by \code{model}, using
+the ID column \code{model$QTL$diag$genetic.term}.
+\item Defines a window of \code{flanking} markers on each side of \code{mark}.
+\item For each candidate marker in the window, removes nearby markers within
+\code{exclusion.window} (in the same units as the map positions returned by
+\code{qtl::pull.map()}) from the background set used to build the covariance.
+\item Constructs a covariance object via \code{wgaim:::constructCM()} and
+assigns \code{covObj} into the parent frame (a side-effect required by
+downstream \code{wgaim}/\code{asreml} update code).
+\item Refits the model with the candidate marker added and the original QTL
+marker removed, then extracts an effect estimate and its variance to compute
+a test statistic, p-value, and LOD.
+}
+}
+\section{Note}{
+
+\code{fineMap()} assigns an object named \code{covObj} into the calling
+environment (\code{parent.frame()}). This is required by internal \code{wgaim}
+update routines that expect \code{covObj} to exist during model refits.
+}
+
 \examples{
 \dontrun{
 JULES COMPLETE

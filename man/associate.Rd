@@ -2,33 +2,93 @@
 % Please edit documentation in R/associate.R
 \name{associate}
 \alias{associate}
-\title{Associate BLUEs with BLUPs from predict calls of the same model}
+\title{Associate BLUEs with BLUPs form predict calls of the same model}
 \usage{
-associate(
-  model,
-  ran.term = "Treatment:Cultivar",
-  fix.term = "Treatment:Type",
-  ...
-)
+associate(model, ran.term = "Site:Genotype", fix.term = "Site:Type", ...)
 }
 \arguments{
-\item{model}{An \code{asreml} model.}
+\item{model}{An \code{asreml} model object.
+The model must contain a valid \code{model$call$data} reference.}
 
-\item{ran.term}{Random terms from the \code{model}.}
+\item{ran.term}{Character string specifying the random-effect term
+to classify in \code{predict()}. Examples:
+\code{"gen"} or \code{"loc:gen"}.}
 
-\item{fix.term}{Fixed terms from the \code{model}.}
+\item{fix.term}{Character string specifying the fixed-effect term
+to classify in \code{predict()}. Examples:
+\code{"loc"} or \code{"Variety"}.}
 
-\item{...}{Other parameters to be passed to the predict function.}
+\item{...}{Additional arguments passed to \code{predict()}.}
 }
 \value{
-JULES COMPLETE
+A \code{data.frame} containing:
+\itemize{
+\item Classification variables
+\item \code{blups}
+\item \code{blups.std.error}
+\item \code{blues}
+\item \code{blues.std.error}
+}
 }
 \description{
-Associate BLUEs with BLUPs from predict calls of the same model
+Extracts BLUPs (random effects) and BLUEs (fixed effects)
+from an \code{asreml} fitted model using \code{predict()}
+and merges them into a single data frame.
+}
+\details{
+The function performs:
+\enumerate{
+\item \code{predict(model, classify = ran.term, only = ran.term)}
+to extract BLUPs
+\item \code{predict(model, classify = fix.term)}
+to extract BLUEs
+}
+
+If \code{ran.term} is an interaction and uses structured
+variance models (e.g. \code{fa()}, \code{us()}, \code{diag()},
+\code{corh()}, \code{corgh()}), the appropriate term is passed
+to the \code{only} argument.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+if (requireNamespace("asreml", quietly = TRUE)) {
+
+  data(oats)
+
+  oats$Blocks   <- factor(oats$Blocks)
+  oats$Variety  <- factor(oats$Variety)
+  oats$Nitrogen <- factor(oats$Nitrogen)
+
+  # Fit a simple mixed model
+  m <- asreml::asreml(
+    fixed  = yield ~ Variety + Nitrogen,
+    random = ~ Blocks,
+    data   = oats
+  )
+
+  # Extract BLUPs for Blocks and BLUEs for Variety
+  associate(
+    m,
+    ran.term = "Blocks",
+    fix.term = "Variety"
+  )
+
+  # Example with interaction BLUPs
+  m2 <- asreml::asreml(
+    fixed  = yield ~ Variety,
+    random = ~ Blocks:Variety,
+    data   = oats
+  )
+
+  associate(
+    m2,
+    ran.term = "Blocks:Variety",
+    fix.term = "Variety"
+  )
+}
 }
 
+}
+\seealso{
+\code{\link[asreml]{predict.asreml}}
 }

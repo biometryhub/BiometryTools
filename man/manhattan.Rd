@@ -2,18 +2,50 @@
 % Please edit documentation in R/manhattan.R
 \name{manhattan}
 \alias{manhattan}
-\title{Manhattan plot using ggplot}
+\title{Manhattan plot for QTL diagnostics}
 \usage{
 manhattan(mlist, cross, chr.in = NULL, annotate = TRUE, ...)
 }
 \arguments{
-\item{...}{}
+\item{mlist}{Named list of QTL analysis results. Each element must contain:
+\itemize{
+\item \code{QTL$diag$oint[[1]]}: a named numeric vector of statistics per marker
+(names like \code{"Chr.1.abc"} are allowed),
+\item \code{QTL$qtl}: a character vector of selected QTL marker names (used for
+annotation when \code{annotate = TRUE}).
+}}
+
+\item{cross}{A \code{qtl::cross} object containing marker maps in \code{cross$geno}.
+Used to compute cumulative genome positions and chromosome labels.}
+
+\item{chr.in}{Optional character vector of chromosome IDs to include
+(e.g. \code{c("1","2","X")}). Default \code{NULL} (use all chromosomes).}
+
+\item{annotate}{Logical. If \code{TRUE} (default), label selected QTL markers
+(\code{x$QTL$qtl}) on the plot.}
+
+\item{...}{Currently unused.}
 }
 \value{
-
+A \code{ggplot2} object (a faceted Manhattan plot). If \code{annotate = TRUE},
+the returned plot includes text labels for selected markers.
 }
 \description{
-Manhattan plot using ggplot
+Creates a Manhattan-style plot (via \code{ggplot2}) of the outlier/diagnostic
+statistic across genome position for one or more analyses.
+}
+\details{
+The function expects \code{mlist} to be a named list of results where each element
+contains QTL diagnostic output in \code{x$QTL$diag$oint[[1]]}. Marker positions are
+taken from the supplied \code{cross} object (typically an \code{rqtl} cross).
+
+The statistic is plotted against a cumulative genome position computed from
+the marker maps in \code{cross$geno}. Chromosomes are shown using alternating point
+colours (two groups). The plot is faceted by the names of \code{mlist} (one panel
+per analysis).
+
+If \code{chr.in} is supplied, both the cross object and the plotted markers are
+filtered to those chromosomes.
 }
 \examples{
 \dontrun{

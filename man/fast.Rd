@@ -2,21 +2,107 @@
 % Please edit documentation in R/fast.R
 \name{fast}
 \alias{fast}
-\title{FAST: overall performance and stability for interpreting Factor Analytic models}
+\title{FAST: Overall performance and stability from a factor-analytic MET model}
 \usage{
-fast(model, dat = NULL, term = "fa(Site, 4):Genotype", ...)
+fast(model, term = "fa(Site, 4):Genotype", ...)
 }
 \arguments{
-\item{...}{}
+\item{model}{An \code{asreml} model object containing the FA term specified by \code{term}.}
+
+\item{term}{Character string giving the FA term of interest, typically of the form
+\code{"fa(<Env>, <k>):<Genotype>"} (default \code{"fa(Site, 4):Genotype"}).}
+
+\item{...}{Additional arguments passed to \code{ASExtras4::fa.asreml()}.}
+
+\item{dat}{A data frame used only to obtain factor levels for the environment and genotype terms
+named in \code{term}. Must contain those columns as factors (e.g. \code{Site} and \code{Genotype}).}
 }
 \value{
-
+A data frame with one row per Environment \eqn{\times} Genotype combination containing:
+\itemize{
+\item the environment factor (e.g. \code{Site}),
+\item \code{loads1}, \code{loads2}, ... and \code{spec.var} (from \code{ASExtras4::fa.asreml()}),
+\item the genotype factor (e.g. \code{Genotype}),
+\item \code{score1}, \code{score2}, ... (scores),
+\item \code{fitted1}, \code{fitted2}, ... (per-factor fitted contributions),
+\item \code{CVE} (sum of fitted contributions across factors),
+\item \code{VE} (\code{CVE + spec.var}; included for convenience),
+\item \code{OP} (overall performance; constant within genotype),
+\item \code{dev} (deviation from factor-1 fitted contribution),
+\item \code{stab} (mean squared deviation by genotype; \code{sqrt(stab)} gives RMSD scale).
+}
 }
 \description{
-FAST: overall performance and stability for interpreting Factor Analytic models
+Compute FAST-style summaries (overall performance and stability) from an
+ASReml factor analytic (FA) mixed model fitted to variety-by-environment
+(VE) effects. The method is based on the latent regression interpretation of
+the FA model described by Smith & Cullis (2018).
+}
+\details{
+Consider the common VE (CVE) effects \eqn{\tilde\beta_{ij}} for genotype
+\eqn{i} in environment \eqn{j} under an FA model with rotated loadings
+\eqn{\hat\lambda_{rj}} and genotype scores \eqn{\tilde f_{ri}}. Smith & Cullis (2018)
+separate the first factor from the remainder via the \emph{first latent regression}
+representation, where \eqn{\tilde\epsilon_{ij}} collects the contributions from factors
+\eqn{r = 2,\dots,k} (and can be interpreted as deviations about the first
+latent regression line).
+
+When (almost) all rotated loadings for factor 1 are positive, Smith & Cullis (2018)
+define \strong{overall performance} (OP) for genotype \eqn{i} as the fitted value at the
+mean of the factor-1 loadings:
+\deqn{OP_i = \bar\lambda_1 \tilde f_{1i},}
+where \eqn{\bar\lambda_1} is the mean of \eqn{\hat\lambda_{1j}} across environments.
+
+They define \strong{stability} as the root mean squared deviation (RMSD) about the first
+latent regression line:
+\deqn{RMSD_i = \sqrt{\frac{1}{p}\sum_{j=1}^p (\tilde\beta_{ij} - \hat\lambda_{1j}\tilde f_{1i})^2},}
+where \eqn{p} is the number of environments.
+
+This function reconstructs per-environment fitted contributions
+\eqn{\widehat{\mathrm{fitted}}_{rij} = \hat\lambda_{rj}\tilde f_{ri}} and forms
+\code{CVE} as their sum across factors. It then computes:
+\itemize{
+\item \code{OP = mean(loads1) * score1} (matches \eqn{OP_i} above),
+\item \code{dev = CVE - fitted1} (corresponds to \eqn{\tilde\beta_{ij}-\hat\lambda_{1j}\tilde f_{1i}}),
+\item \code{stab = mean(dev^2)} by genotype (this is \emph{MSD}; RMSD is \code{sqrt(stab)}).
+}
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+
+library(asreml)
+data(oats)
+
+oats$Nitrogen <- as.factor(oats$Nitrogen)
+oats$Variety  <- as.factor(oats$Variety)
+oats$Block    <- as.factor(oats$Block)
+
+m_fa <- asreml(
+  fixed    = yield ~ Nitrogen,                 # Fixed treatment levels
+  random   = ~ Block + Block:Variety + fa(Nitrogen, 2):Variety,
+  residual = ~ units,
+  data     = oats
+)
+
+out <- fast(m_fa, dat = oats, term = "fa(Nitrogen, 2):Variety")
+
+op_by_var   <- tapply(out$OP, out$Variety, unique)
+msd_by_var  <- tapply(out$stab, out$Variety, unique)
+rmsd_by_var <- sqrt(msd_by_var)
+
+summary_tbl <- data.frame(
+  Variety = names(op_by_var),
+  OP      = as.numeric(op_by_var),
+  MSD     = as.numeric(msd_by_var),
+  RMSD    = as.numeric(rmsd_by_var),
+  row.names = NULL
+)
+
+summary_tbl[order(-summary_tbl$OP), ]
 }
+
+}
+\references{
+Smith, A. B. & Cullis, B. R. (2018). Plant breeding selection tools built on factor analytic
+mixed models for multi-environment trial data. \emph{Euphytica}, 214:143.
 }

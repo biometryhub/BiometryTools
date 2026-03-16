@@ -11,9 +11,6 @@ reinstall_packages(location = .libPaths()[1], source = FALSE)
 
 \item{source}{Logical. Install packages from source that have later source versions than binaries? This should usually be FALSE.}
 }
-\value{
-
-}
 \description{
 Reinstall all currently installed packages
 }

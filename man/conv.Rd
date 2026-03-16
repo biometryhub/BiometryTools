@@ -2,30 +2,108 @@
 % Please edit documentation in R/conv3.R
 \name{conv}
 \alias{conv}
-\title{Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments}
+\title{Convert Treatment × Site BLUPs into Efficiency and Responsiveness}
 \usage{
 conv(model, Env = "TSite:Variety", levs = NULL, sep = "-", ...)
 }
 \arguments{
-\item{model}{Final full Treatment x Site x Variety model}
+\item{model}{An \code{asreml} fitted model object.}
 
-\item{Env}{Treatment x Site x Variety term}
+\item{Env}{Character string of the form \code{"<TS_term>:<Variety_term>"},
+e.g. \code{"TSite:Variety"}, used in \code{predict(..., classify = Env)}.}
 
-\item{levs}{Named treatment levels used in transformation. i.e c("Treat1", "Treat2") would regress Treat2 on Treat1}
+\item{levs}{Character vector of length 2 giving the two treatment levels.
+\code{levs[1]} is treated as the baseline (efficiency).}
 
-\item{sep}{separator used for Treat x Site names. Defaults to \code{-}}
+\item{sep}{Separator used in Treatment × Site factor level names.}
 
-\item{...}{Other arguments passed to \code{predict}}
+\item{...}{Additional arguments passed to \code{predict()}.}
 }
 \value{
-Returns a list with BLUPs, and some other stuff JULES COMPLETE
+A list containing:
+\itemize{
+\item \code{blups}: data frame with columns \code{Site}, \code{Variety},
+\code{levs[1]}, \code{levs[2]}, and \code{resp}
+\item \code{TGmat}: transformed covariance matrix
+\item \code{Gmat}: original covariance matrix
+\item \code{beta}: per-site regression coefficient
+\item \code{sigr}: per-site residual variance
+\item \code{tmat}: transformation matrix
+}
 }
 \description{
-Conversion function for Efficiency and Responsiveness BLUPs in Treatment x Site x Variety experiments
+Given an \code{asreml} model with a Treatment × Site × Variety structure,
+this function extracts BLUPs for a Treatment × Site interaction (classified
+by Variety) and re-parameterizes them into:
+\itemize{
+\item \strong{Efficiency}: the BLUP under a baseline treatment (\code{levs[1]})
+\item \strong{Responsiveness}: the residual BLUP under a second treatment
+(\code{levs[2]}) after regressing \code{levs[2]} on \code{levs[1]}
+using the random-effect covariance matrix
+}
+}
+\details{
+For each site \eqn{s}, the regression coefficient is:
+
+\deqn{
+  \beta_s = \mathrm{Cov}(T_1, T_2) / \mathrm{Var}(T_1)
+}
+
+and responsiveness BLUPs are computed as:
+
+\deqn{
+  b_{\mathrm{resp}} = b_{T_2} - \beta_s b_{T_1}.
+}
+
+The function also returns the transformed covariance matrix
+\eqn{G_{\mathrm{trans}} = T G T^\top} corresponding to the
+efficiency/responsiveness parameterization.
+
+\strong{Important:}
+If the fitted model assumes independent Treatment × Site effects
+(e.g. \code{random = ~ TSite:Variety}), then the covariance between
+treatments is zero and \eqn{\beta_s = 0}. In that case,
+responsiveness reduces to the BLUP under \code{levs[2]}.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+library(asreml)
+library(agridat)
+
+data(besag.met)
+dat <- besag.met
+
+dat$county <- factor(dat$county)
+dat$gen    <- factor(dat$gen)
+dat$rep    <- factor(dat$rep)
+dat$block  <- factor(dat$block)
+
+# Create artificial 2-level treatment within each site
+dat$Treat <- ave(seq_len(nrow(dat)), dat$county, FUN = function(i) {
+  rep(c("Treat1","Treat2"), length.out = length(i))
+})
+dat$Treat <- factor(dat$Treat)
+
+dat$TSite   <- interaction(dat$Treat, dat$county, sep = "-")
+dat$Variety <- dat$gen
+
+m <- asreml(
+  fixed  = yield ~ Treat,
+  random = ~ rep + block + Variety + TSite:Variety,
+  data   = dat
+)
+
+out <- conv(
+  model = m,
+  Env   = "TSite:Variety",
+  levs  = c("Treat1","Treat2")
+)
+
+head(out$blups)
+
+# In this model, treatments are independent,
+# so beta will be zero:
+out$beta
 }
 
 }

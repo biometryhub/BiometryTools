@@ -2,26 +2,91 @@
 % Please edit documentation in R/regresion_functions.R
 \name{fixedRegress}
 \alias{fixedRegress}
-\title{Fixed regression for doing stuff}
+\title{Compute a fixed-effect responsiveness index from predicted values}
 \usage{
 fixedRegress(
   model,
   term = "Treatment:Genotype",
-  levs = c("9 cm", "Control"),
-  robust = TRUE
+  by = NULL,
+  levs = NULL,
+  simple = TRUE
 )
 }
 \arguments{
-\item{robust}{}
+\item{model}{A fitted \code{asreml} model object.}
+
+\item{term}{A character string specifying the prediction term, for example
+\code{"Treatment:Genotype"} or \code{"Treatment:Site:Genotype"}.}
+
+\item{by}{An optional character string specifying variables used to split the
+analysis into sections. These variables must be contained in \code{term}.}
+
+\item{levs}{A character vector of length 2 giving the treatment levels to be
+compared.}
+
+\item{simple}{Logical; if \code{TRUE}, compute responsiveness as residuals
+from a simple linear regression of treatment 2 on treatment 1. If
+\code{FALSE}, compute responsiveness using the model-based prediction
+covariance matrix.}
 }
 \value{
-
+A data frame containing:
+\describe{
+\item{Split}{The grouping level defined by \code{by}, or a default label if
+no grouping is used.}
+\item{Regress.Var}{The matching regression unit, for example genotype.}
+\item{\code{levs[1]}}{Predicted value under the first treatment level.}
+\item{\code{levs[2]}}{Predicted value under the second treatment level.}
+\item{reponse.index}{The derived responsiveness index.}
+\item{std.error}{Standard error of the responsiveness index.}
+\item{HSD}{A Tukey-style HSD summary based on the average pairwise SED.}
+\item{sed}{Average pairwise SED of the responsiveness index.}
+}
 }
 \description{
-Fixed regression for doing stuff
+Forms a regression-based responsiveness index from predicted values obtained
+from a fitted \code{asreml} model.
+}
+\details{
+The function identifies two treatment levels within a prediction term and
+compares matched predictions across a remaining regression variable
+(for example genotype). The resulting responsiveness index is computed either
+as:
+\itemize{
+\item residuals from a simple linear regression of the second treatment on
+the first, or
+\item model-based conditional residuals using the prediction covariance
+matrix.
+}
+
+The function first predicts the full \code{term} using
+\code{predict.asreml(..., vcov = TRUE)}. It then identifies:
+\itemize{
+\item the factor containing the treatment levels in \code{levs},
+\item optional grouping variables in \code{by}, and
+\item the remaining variable(s) used to match observations across the two
+treatment levels.
+}
+
+For each split defined by \code{by}, matched predictions are extracted for
+the two treatment levels. If \code{simple = TRUE}, a linear regression
+\eqn{y_2 \sim y_1} is fitted and the residuals are returned as the
+responsiveness index. If \code{simple = FALSE}, the responsiveness index is
+computed from the conditional mean structure implied by the prediction
+covariance matrix.
+
+The function also reports standard errors, an average SED, and a Tukey-style
+HSD summary for the responsiveness index.
+}
+\note{
+This function assumes exactly two treatment levels in \code{levs}. It also
+assumes that matched observations across treatments can be identified using
+the remaining variable(s) in \code{term} after removing the treatment factor
+and any grouping variables in \code{by}.
 }
 \examples{
 \dontrun{
-JULES COMPLETE
+TODO
 }
+
 }

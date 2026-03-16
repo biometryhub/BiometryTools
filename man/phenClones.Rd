@@ -2,7 +2,7 @@
 % Please edit documentation in R/clones.R
 \name{phenClones}
 \alias{phenClones}
-\title{Check whether genetic clones are in the experiment}
+\title{Test Genetic Clone Similarity in an ASReml Model}
 \usage{
 phenClones(
   model,
@@ -14,23 +14,50 @@ phenClones(
 )
 }
 \arguments{
-\item{model}{An \code{asreml} model.}
+\item{model}{An \code{asreml} fitted model object.}
 
-\item{cross}{JULES COMPLETE}
+\item{cross}{A list-like object containing a \code{$pheno} data frame.}
 
-\item{matching}{JULES COMPLETE}
+\item{matching}{Character string giving the genotype column name
+within both the model predictions and \code{cross$pheno}.}
 
-\item{Envir}{JULES COMPLETE}
+\item{Envir}{Optional character string specifying an environment
+factor. If supplied, clone testing is performed separately
+within each environment.}
 
-\item{no.samp}{JULES COMPLETE}
+\item{no.samp}{Number of random permutations used to estimate
+the null distribution (default = 1000).}
 
-\item{sep}{JULES COMPLETE}
+\item{sep}{Character separator used to split clone identifiers
+(default = "_").}
 }
 \value{
-A data frame containing JULES COMPLETE
+A data frame with columns:
+\itemize{
+\item \code{Type1}: Estimated type I error rate from permutations
+\item \code{Correlation}: Observed clone correlation
+\item \code{P-value}: Significance test for observed correlation
+}
 }
 \description{
-Check whether genetic clones are in the experiment
+Evaluates whether genetically related clones show significantly
+correlated predicted values from an \code{asreml} model.
+}
+\details{
+Clone relationships are extracted from a \code{cross} object,
+and a permutation test is used to assess whether observed
+correlations exceed random expectation.
+
+For each pair of cloned genotypes:
+\enumerate{
+\item Predicted values are extracted from \code{predict()}.
+\item The observed correlation between clone pairs is computed.
+\item A permutation test generates random correlations.
+\item A p-value is computed from the F-distribution.
+}
+
+The Type1 column reports the proportion of permutation samples
+with p < 0.05.
 }
 \examples{
 \dontrun{

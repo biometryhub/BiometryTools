@@ -29,6 +29,7 @@ Imports:
     RColorBrewer,
     wgaim
 Suggests: 
+    ASExtras4,
     lubridate,
     maptools,
     ncdf4,
@@ -40,5 +41,5 @@ Enhances: asreml
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.3.3
 SystemRequirements: asreml-R 4.x
